@@ -2,206 +2,279 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Tech Revive Wireless</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   :root {
-    --bg: #f5f3ef;
-    --surface: #ffffff;
-    --surface2: #edeae4;
-    --border: #d4cfc7;
-    --text: #1a1a2e;
-    --text2: #6b6860;
-    --accent: #c0392b;
-    --green: #2d6a4f;
-    --red: #c0392b;
-    --radius: 3px;
+    --bg: #f5f3ef; --surface: #ffffff; --surface2: #edeae4; --border: #d4cfc7;
+    --text: #1a1a2e; --text2: #6b6860; --accent: #c0392b; --green: #2d6a4f; --red: #c0392b; --radius: 3px;
+    --tab-h: 64px; --top-h: 52px;
   }
   [data-theme="dark"] {
-    --bg: #111113;
-    --surface: #1c1c1f;
-    --surface2: #252528;
-    --border: #333338;
-    --text: #f0ede8;
-    --text2: #888880;
-    --accent: #e05545;
-    --green: #4ade80;
-    --red: #e05545;
+    --bg: #111113; --surface: #1c1c1f; --surface2: #252528; --border: #333338;
+    --text: #f0ede8; --text2: #888880; --accent: #e05545; --green: #4ade80; --red: #e05545;
   }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; transition: background 0.2s, color 0.2s; }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+  body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; transition:background .2s,color .2s; }
 
-  /* SYNC BAR */
-  .sync-bar {
-    position: fixed; top: 0; left: 0; right: 0; height: 36px;
-    background: var(--text); color: var(--bg);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 24px 0 240px;
-    font-size: 11px; font-weight: 500; letter-spacing: 0.5px; z-index: 50;
-    transition: background 0.2s;
+  /* TOP BAR (mobile) */
+  .top-bar {
+    display:none; position:fixed; top:0; left:0; right:0; height:var(--top-h);
+    background:var(--surface); border-bottom:1px solid var(--border);
+    align-items:center; justify-content:space-between; padding:0 20px; z-index:100;
   }
-  .sync-status { display: flex; align-items: center; gap: 8px; }
-  .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: #888; }
-  .sync-dot.local { background: #f59e0b; }
-  .sync-dot.synced { background: #4ade80; }
-  .sync-dot.error { background: #ef4444; }
-  .sync-setup-btn {
-    background: none; border: 1px solid rgba(255,255,255,0.3); color: inherit;
-    font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 600;
-    letter-spacing: 1px; text-transform: uppercase; padding: 4px 12px;
-    cursor: pointer; border-radius: 2px; transition: border-color 0.15s;
-  }
-  .sync-setup-btn:hover { border-color: rgba(255,255,255,0.7); }
+  .top-bar-logo { display:flex; flex-direction:column; }
+  .top-bar-logo .lb { display:inline-flex; flex-direction:column; border:2px solid var(--text); padding:4px 8px; gap:0; }
+  .top-bar-logo .lt, .top-bar-logo .lr { font-family:'DM Serif Display',serif; font-size:12px; color:var(--text); line-height:1.1; }
+  .top-bar-logo .lw { font-size:6px; font-weight:700; letter-spacing:2.5px; color:var(--text); text-transform:uppercase; margin-top:2px; }
+  .top-bar-logo .ll { height:2px; background:var(--accent); width:55%; margin-top:2px; }
+  .top-bar-right { display:flex; align-items:center; gap:10px; }
+  .sync-dot-small { width:7px; height:7px; border-radius:50%; background:#888; }
+  .sync-dot-small.local { background:#f59e0b; }
+  .sync-dot-small.synced { background:#4ade80; }
+  .sync-dot-small.error { background:#ef4444; }
+  .icon-btn { background:none; border:none; cursor:pointer; color:var(--text2); padding:6px; font-size:18px; line-height:1; }
 
-  /* SIDEBAR */
+  /* BOTTOM TAB BAR */
+  .bottom-tab-bar {
+    display:none; position:fixed; bottom:0; left:0; right:0; height:var(--tab-h);
+    background:var(--surface); border-top:1px solid var(--border); z-index:100;
+    align-items:stretch;
+  }
+  .tab-item {
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:4px; cursor:pointer; border:none; background:none; color:var(--text2);
+    font-family:'DM Sans',sans-serif; font-size:9px; font-weight:600; letter-spacing:0.8px;
+    text-transform:uppercase; transition:color .15s; padding:8px 4px;
+    border-top:2px solid transparent;
+  }
+  .tab-item.active { color:var(--text); border-top-color:var(--accent); }
+  .tab-icon { font-size:20px; line-height:1; }
+
+  /* SYNC DOT (in sidebar only) */
+  .sync-dot { width:7px; height:7px; border-radius:50%; background:#888; display:inline-block; }
+  .sync-dot.local { background:#f59e0b; }
+  .sync-dot.synced { background:#4ade80; }
+  .sync-dot.error { background:#ef4444; }
+
+  /* SIDEBAR (desktop) */
   .sidebar {
-    position: fixed; left: 0; top: 36px; bottom: 0; width: 220px;
-    background: var(--surface); border-right: 1px solid var(--border);
-    display: flex; flex-direction: column; z-index: 100;
-    transition: background 0.2s, border-color 0.2s;
+    position:fixed; left:0; top:0; bottom:0; width:220px;
+    background:var(--surface); border-right:1px solid var(--border);
+    display:flex; flex-direction:column; z-index:100;
   }
-  .logo-area { padding: 28px 24px 24px; border-bottom: 1px solid var(--border); }
-  .logo-box { display: inline-flex; flex-direction: column; border: 2px solid var(--text); padding: 8px 12px; gap: 1px; }
-  .logo-tech, .logo-revive { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); line-height: 1; }
-  .logo-wireless { font-family: 'DM Sans', sans-serif; font-size: 8px; font-weight: 600; letter-spacing: 3px; color: var(--text); text-transform: uppercase; margin-top: 4px; }
-  .logo-line { height: 2px; background: var(--accent); width: 60%; margin-top: 3px; }
-  nav { flex: 1; padding: 16px 0; }
+  .logo-area { padding:28px 24px 24px; border-bottom:1px solid var(--border); }
+  .logo-box { display:inline-flex; flex-direction:column; border:2px solid var(--text); padding:8px 12px; gap:1px; }
+  .logo-tech,.logo-revive { font-family:'DM Serif Display',serif; font-size:18px; color:var(--text); line-height:1; }
+  .logo-wireless { font-family:'DM Sans',sans-serif; font-size:8px; font-weight:600; letter-spacing:3px; color:var(--text); text-transform:uppercase; margin-top:4px; }
+  .logo-line { height:2px; background:var(--accent); width:60%; margin-top:3px; }
+  nav { flex:1; padding:16px 0; }
   .nav-item {
-    display: flex; align-items: center; gap: 10px; padding: 11px 24px;
-    cursor: pointer; font-size: 11px; font-weight: 500; color: var(--text2);
-    letter-spacing: 1px; text-transform: uppercase;
-    transition: color 0.15s, background 0.15s; border-left: 2px solid transparent;
+    display:flex; align-items:center; gap:10px; padding:11px 24px; cursor:pointer;
+    font-size:11px; font-weight:500; color:var(--text2); letter-spacing:1px; text-transform:uppercase;
+    transition:color .15s,background .15s; border-left:2px solid transparent;
   }
-  .nav-item:hover { color: var(--text); background: var(--surface2); }
-  .nav-item.active { color: var(--text); border-left-color: var(--accent); background: var(--surface2); font-weight: 600; }
-  .sidebar-bottom { padding: 16px 24px; border-top: 1px solid var(--border); }
+  .nav-item:hover { color:var(--text); background:var(--surface2); }
+  .nav-item.active { color:var(--text); border-left-color:var(--accent); background:var(--surface2); font-weight:600; }
+  .sidebar-bottom { padding:16px 24px; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:8px; }
   .theme-btn {
-    width: 100%; padding: 8px 12px; background: var(--surface2); border: 1px solid var(--border);
-    border-radius: var(--radius); color: var(--text2); font-family: 'DM Sans', sans-serif;
-    font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase;
-    cursor: pointer; transition: all 0.15s;
+    width:100%; padding:8px 12px; background:var(--surface2); border:1px solid var(--border);
+    border-radius:var(--radius); color:var(--text2); font-family:'DM Sans',sans-serif;
+    font-size:11px; font-weight:500; letter-spacing:1px; text-transform:uppercase; cursor:pointer;
   }
-  .theme-btn:hover { color: var(--text); border-color: var(--text2); }
+  .settings-btn-desk {
+    width:100%; padding:8px 12px; background:var(--surface2); border:1px solid var(--border);
+    border-radius:var(--radius); color:var(--text2); font-family:'DM Sans',sans-serif;
+    font-size:11px; font-weight:500; letter-spacing:1px; text-transform:uppercase; cursor:pointer;
+  }
 
   /* MAIN */
-  .main { margin-left: 220px; padding-top: 36px; min-height: 100vh; padding-left: 48px; padding-right: 48px; padding-bottom: 48px; }
-  .page { display: none; padding-top: 40px; }
-  .page.active { display: block; }
-  .page-header {
-    display: flex; align-items: baseline; justify-content: space-between;
-    margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid var(--border);
-    flex-wrap: wrap; gap: 16px;
-  }
-  .page-title { font-family: 'DM Serif Display', serif; font-size: 36px; color: var(--text); letter-spacing: -1px; }
-  .page-subtitle { font-size: 12px; color: var(--text2); text-transform: uppercase; letter-spacing: 1.5px; margin-top: 4px; }
+  .main { margin-left:220px; padding-top:0; min-height:100vh; padding-left:48px; padding-right:48px; padding-bottom:48px; }
+  .page { display:none; padding-top:40px; }
+  .page.active { display:block; }
+  .page-header { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:40px; padding-bottom:20px; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:16px; }
+  .page-title { font-family:'DM Serif Display',serif; font-size:36px; color:var(--text); letter-spacing:-1px; }
+  .page-subtitle { font-size:12px; color:var(--text2); text-transform:uppercase; letter-spacing:1.5px; margin-top:4px; }
 
   /* STATS */
-  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 40px; }
-  .stat-card { background: var(--surface); border: 1px solid var(--border); padding: 24px; }
-  .stat-label { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text2); margin-bottom: 10px; }
-  .stat-value { font-family: 'DM Serif Display', serif; font-size: 30px; color: var(--text); letter-spacing: -1px; }
-  .stat-value.green { color: var(--green); }
-  .stat-value.red { color: var(--red); }
+  .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:40px; }
+  .stat-card { background:var(--surface); border:1px solid var(--border); padding:24px; }
+  .stat-label { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:1.5px; color:var(--text2); margin-bottom:10px; }
+  .stat-value { font-family:'DM Serif Display',serif; font-size:30px; color:var(--text); letter-spacing:-1px; }
+  .stat-value.green { color:var(--green); }
+  .stat-value.red { color:var(--red); }
 
   /* BUTTONS */
-  .btn { padding: 10px 20px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border: none; border-radius: var(--radius); transition: all 0.15s; }
-  .btn-primary { background: var(--text); color: var(--bg); }
-  .btn-primary:hover { opacity: 0.85; }
-  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text2); }
-  .btn-outline:hover { border-color: var(--text); color: var(--text); }
-  .btn-danger { background: transparent; border: 1px solid var(--red); color: var(--red); font-size: 10px; padding: 6px 12px; font-family: 'DM Sans', sans-serif; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: var(--radius); transition: all 0.15s; }
-  .btn-danger:hover { background: var(--red); color: white; }
-  .btn-sm { padding: 6px 14px; font-size: 10px; }
-  .btn-invoice { background: transparent; border: 1px solid var(--border); color: var(--text2); font-size: 10px; padding: 6px 12px; font-family: 'DM Sans', sans-serif; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: var(--radius); transition: all 0.15s; }
-  .btn-invoice:hover { border-color: var(--text); color: var(--text); }
+  .btn { padding:10px 20px; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600; letter-spacing:1px; text-transform:uppercase; cursor:pointer; border:none; border-radius:var(--radius); transition:all .15s; }
+  .btn-primary { background:var(--text); color:var(--bg); }
+  .btn-primary:hover { opacity:.85; }
+  .btn-outline { background:transparent; border:1px solid var(--border); color:var(--text2); }
+  .btn-outline:hover { border-color:var(--text); color:var(--text); }
+  .btn-danger { background:transparent; border:1px solid var(--red); color:var(--red); font-size:10px; padding:6px 12px; font-family:'DM Sans',sans-serif; font-weight:600; letter-spacing:1px; text-transform:uppercase; cursor:pointer; border-radius:var(--radius); transition:all .15s; }
+  .btn-danger:hover { background:var(--red); color:white; }
+  .btn-sm { padding:6px 14px; font-size:10px; }
+  .btn-invoice { background:transparent; border:1px solid var(--border); color:var(--text2); font-size:10px; padding:6px 12px; font-family:'DM Sans',sans-serif; font-weight:600; letter-spacing:1px; text-transform:uppercase; cursor:pointer; border-radius:var(--radius); transition:all .15s; }
+  .btn-invoice:hover { border-color:var(--text); color:var(--text); }
 
   /* TABLE */
-  .table-wrap { background: var(--surface); border: 1px solid var(--border); overflow: hidden; overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; min-width: 700px; }
-  thead th { padding: 14px 20px; text-align: left; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text2); border-bottom: 1px solid var(--border); background: var(--surface2); white-space: nowrap; }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--surface2); }
-  tbody td { padding: 16px 20px; font-size: 13px; color: var(--text); }
-  .badge { display: inline-block; padding: 3px 10px; font-size: 10px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase; border-radius: 2px; }
-  .badge-paid { background: rgba(45,106,79,0.12); color: var(--green); border: 1px solid rgba(45,106,79,0.25); }
-  .badge-unpaid { background: rgba(192,57,43,0.1); color: var(--red); border: 1px solid rgba(192,57,43,0.25); }
+  .table-wrap { background:var(--surface); border:1px solid var(--border); overflow:hidden; overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; min-width:700px; }
+  thead th { padding:14px 20px; text-align:left; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:1.5px; color:var(--text2); border-bottom:1px solid var(--border); background:var(--surface2); white-space:nowrap; }
+  tbody tr { border-bottom:1px solid var(--border); transition:background .1s; }
+  tbody tr:last-child { border-bottom:none; }
+  tbody tr:hover { background:var(--surface2); }
+  tbody td { padding:16px 20px; font-size:13px; color:var(--text); }
+  .badge { display:inline-block; padding:3px 10px; font-size:10px; font-weight:600; letter-spacing:.8px; text-transform:uppercase; border-radius:2px; }
+  .badge-paid { background:rgba(45,106,79,.12); color:var(--green); border:1px solid rgba(45,106,79,.25); }
+  .badge-unpaid { background:rgba(192,57,43,.1); color:var(--red); border:1px solid rgba(192,57,43,.25); }
+  .toggle-pay { background:none; border:none; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.8px; padding:0; }
+  .action-btns { display:flex; gap:6px; align-items:center; }
+
+  /* MOBILE JOB CARDS */
+  .job-cards { display:none; flex-direction:column; gap:12px; }
+  .job-card { background:var(--surface); border:1px solid var(--border); padding:16px; border-radius:4px; }
+  .job-card-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; }
+  .job-card-name { font-weight:600; font-size:15px; color:var(--text); }
+  .job-card-device { font-size:12px; color:var(--text2); margin-top:2px; }
+  .job-card-repair { font-size:13px; color:var(--text); margin-bottom:10px; }
+  .job-card-nums { display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:12px; }
+  .job-card-num-label { font-size:9px; text-transform:uppercase; letter-spacing:1px; color:var(--text2); margin-bottom:2px; }
+  .job-card-num-val { font-size:14px; font-weight:600; color:var(--text); }
+  .job-card-actions { display:flex; gap:8px; padding-top:10px; border-top:1px solid var(--border); }
+  .job-card-actions .btn-invoice, .job-card-actions .btn-outline, .job-card-actions .btn-danger { flex:1; text-align:center; }
 
   /* MODAL */
-  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; align-items: center; justify-content: center; }
-  .modal-overlay.open { display: flex; }
-  .modal { background: var(--surface); border: 1px solid var(--border); width: 540px; max-width: 95vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-  .modal-header { padding: 28px 32px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-  .modal-title { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); }
-  .modal-close { background: none; border: none; font-size: 20px; color: var(--text2); cursor: pointer; line-height: 1; padding: 4px; }
-  .modal-close:hover { color: var(--text); }
-  .modal-body { padding: 28px 32px; }
-  .modal-footer { padding: 20px 32px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:200; align-items:center; justify-content:center; padding:16px; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--surface); border:1px solid var(--border); width:540px; max-width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,.2); border-radius:4px; }
+  .modal-header { padding:24px 28px 18px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+  .modal-title { font-family:'DM Serif Display',serif; font-size:22px; color:var(--text); }
+  .modal-close { background:none; border:none; font-size:22px; color:var(--text2); cursor:pointer; line-height:1; padding:4px; }
+  .modal-body { padding:24px 28px; }
+  .modal-footer { padding:18px 28px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end; }
 
   /* FORM */
-  .form-group { margin-bottom: 20px; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  label { display: block; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text2); margin-bottom: 7px; }
-  input, select, textarea { width: 100%; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); outline: none; transition: border-color 0.15s; }
-  input:focus, select:focus, textarea:focus { border-color: var(--text); }
-  textarea { resize: vertical; min-height: 80px; }
+  .form-group { margin-bottom:18px; }
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  label { display:block; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:1.5px; color:var(--text2); margin-bottom:7px; }
+  input,select,textarea { width:100%; padding:12px 14px; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text); outline:none; transition:border-color .15s; }
+  input:focus,select:focus,textarea:focus { border-color:var(--text); }
+  textarea { resize:vertical; min-height:80px; }
 
   /* EMPTY */
-  .empty-state { text-align: center; padding: 60px 20px; }
-  .empty-state-title { font-family: 'DM Serif Display', serif; font-size: 24px; color: var(--text2); margin-bottom: 8px; }
-  .empty-state-sub { font-size: 13px; color: var(--text2); opacity: 0.7; }
+  .empty-state { text-align:center; padding:60px 20px; }
+  .empty-state-title { font-family:'DM Serif Display',serif; font-size:24px; color:var(--text2); margin-bottom:8px; }
+  .empty-state-sub { font-size:13px; color:var(--text2); opacity:.7; }
 
   /* INVENTORY */
-  .inv-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-top: 24px; }
-  .inv-card { background: var(--surface); border: 1px solid var(--border); padding: 20px 24px; }
-  .inv-card-name { font-weight: 600; font-size: 14px; color: var(--text); margin-bottom: 4px; }
-  .inv-card-model { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
-  .inv-card-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-  .inv-card-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text2); }
-  .inv-card-val { font-size: 14px; font-weight: 600; color: var(--text); }
-  .inv-card-actions { display: flex; gap: 8px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
-  .stock-low { color: var(--red); }
-  .stock-ok { color: var(--green); }
+  .inv-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:16px; margin-top:24px; }
+  .inv-card { background:var(--surface); border:1px solid var(--border); padding:20px 24px; }
+  .inv-card-name { font-weight:600; font-size:14px; color:var(--text); margin-bottom:4px; }
+  .inv-card-model { font-size:11px; color:var(--text2); text-transform:uppercase; letter-spacing:1px; margin-bottom:16px; }
+  .inv-card-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .inv-card-label { font-size:10px; text-transform:uppercase; letter-spacing:1px; color:var(--text2); }
+  .inv-card-val { font-size:14px; font-weight:600; color:var(--text); }
+  .inv-card-actions { display:flex; gap:8px; margin-top:16px; padding-top:14px; border-top:1px solid var(--border); }
+  .stock-low { color:var(--red); }
+  .stock-ok { color:var(--green); }
 
   /* TOOLBAR */
-  .toolbar { display: flex; gap: 12px; align-items: center; margin-bottom: 24px; flex-wrap: wrap; }
-  .search-input { flex: 1; min-width: 200px; padding: 9px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text); outline: none; transition: border-color 0.15s; }
-  .search-input:focus { border-color: var(--text); }
-  .section-title { font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--text2); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-  .profit-pos { color: var(--green); font-weight: 600; }
-  .profit-neg { color: var(--red); font-weight: 600; }
-  .toggle-pay { background: none; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; padding: 0; }
-  .action-btns { display: flex; gap: 6px; align-items: center; }
+  .toolbar { display:flex; gap:12px; align-items:center; margin-bottom:24px; flex-wrap:wrap; }
+  .search-input { flex:1; min-width:180px; padding:10px 14px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text); outline:none; }
+  .search-input:focus { border-color:var(--text); }
+  .section-title { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:2px; color:var(--text2); margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid var(--border); }
+  .profit-pos { color:var(--green); font-weight:600; }
+  .profit-neg { color:var(--red); font-weight:600; }
 
-  /* SETUP */
-  .setup-step { display: flex; gap: 16px; margin-bottom: 24px; align-items: flex-start; }
-  .setup-step-num { min-width: 28px; height: 28px; background: var(--text); color: var(--bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; margin-top: 2px; }
-  .setup-step-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-  .setup-step-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
-  .setup-step-desc a { color: var(--accent); text-decoration: none; }
+  /* SETTINGS MODAL */
+  .settings-section { margin-bottom:28px; }
+  .settings-section-title { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:2px; color:var(--text2); margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+  .settings-row { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:14px; }
+  .settings-row-label { font-size:13px; color:var(--text); font-weight:500; }
+  .settings-row-sub { font-size:11px; color:var(--text2); margin-top:2px; }
 
-  @media (max-width: 900px) {
-    .sidebar { width: 180px; }
-    .main { margin-left: 180px; padding-left: 24px; padding-right: 24px; }
-    .stats-row { grid-template-columns: repeat(2, 1fr); }
-    .sync-bar { padding-left: 200px; }
+  /* SETUP STEPS */
+  .setup-step { display:flex; gap:16px; margin-bottom:22px; align-items:flex-start; }
+  .setup-step-num { min-width:28px; height:28px; background:var(--text); color:var(--bg); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; margin-top:2px; }
+  .setup-step-title { font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px; }
+  .setup-step-desc { font-size:12px; color:var(--text2); line-height:1.6; }
+  .setup-step-desc a { color:var(--accent); text-decoration:none; }
+
+  /* PASSWORD GATE */
+  .pw-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:300; align-items:center; justify-content:center; padding:20px; }
+  .pw-overlay.open { display:flex; }
+  .pw-box { background:var(--surface); border:1px solid var(--border); width:360px; max-width:100%; padding:36px 32px; text-align:center; border-radius:4px; }
+  .pw-title { font-family:'DM Serif Display',serif; font-size:24px; color:var(--text); margin-bottom:8px; }
+  .pw-sub { font-size:12px; color:var(--text2); margin-bottom:24px; }
+  .pw-input { width:100%; padding:12px 14px; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius); font-family:'DM Sans',sans-serif; font-size:14px; color:var(--text); outline:none; text-align:center; letter-spacing:2px; margin-bottom:12px; }
+  .pw-input:focus { border-color:var(--text); }
+  .pw-error { font-size:12px; color:var(--red); margin-bottom:12px; min-height:18px; }
+
+  /* RESPONSIVE */
+  @media (max-width:768px) {
+    .sync-bar { display:none; }
+    .sidebar { display:none; }
+    .top-bar { display:flex; }
+    .bottom-tab-bar { display:flex; }
+    .main { margin-left:0; padding-top:calc(var(--top-h) + 16px); padding-left:16px; padding-right:16px; padding-bottom:calc(var(--tab-h) + 20px); }
+    .page { padding-top:16px; }
+    .page-title { font-size:26px; }
+    .stats-row { grid-template-columns:1fr 1fr; gap:10px; margin-bottom:24px; }
+    .stat-card { padding:16px; }
+    .stat-value { font-size:22px; }
+    .table-wrap { display:none; }
+    .job-cards { display:flex; }
+    .inv-grid { grid-template-columns:1fr 1fr; gap:10px; }
+    .form-row { grid-template-columns:1fr; gap:0; }
+    .modal-body { padding:20px; }
+    .modal-header { padding:20px 20px 16px; }
+    .modal-footer { padding:16px 20px; }
+    .page-header { margin-bottom:20px; padding-bottom:16px; }
+    .toolbar { gap:8px; }
+  }
+
+  @media (max-width:400px) {
+    .stats-row { grid-template-columns:1fr 1fr; }
+    .inv-grid { grid-template-columns:1fr; }
   }
 </style>
 </head>
 <body>
 
-<!-- SYNC BAR -->
-<div class="sync-bar">
-  <div class="sync-status">
-    <div class="sync-dot local" id="syncDot"></div>
-    <span id="syncLabel">Saving locally — connect Google Sheets to sync anywhere</span>
+<!-- PASSWORD GATE -->
+<div class="pw-overlay" id="pwOverlay">
+  <div class="pw-box">
+    <div class="pw-title">Settings</div>
+    <div class="pw-sub">Enter your password to access settings</div>
+    <input type="password" class="pw-input" id="pwInput" placeholder="Password" onkeydown="if(event.key==='Enter')checkPassword()">
+    <div class="pw-error" id="pwError"></div>
+    <button class="btn btn-primary" style="width:100%" onclick="checkPassword()">Enter</button>
   </div>
-  <button class="sync-setup-btn" onclick="openModal('setupModal')">Connect Sheets</button>
 </div>
 
-<!-- SIDEBAR -->
+<!-- Hidden sync status elements (used by JS only) -->
+<span id="syncDot" style="display:none"></span>
+<span id="syncLabel" style="display:none"></span>
+
+<!-- MOBILE: TOP BAR -->
+<div class="top-bar">
+  <div class="top-bar-logo">
+    <div class="lb">
+      <span class="lt">Tech</span>
+      <span class="lr">Revive</span>
+      <span class="lw">Wireless</span>
+      <div class="ll"></div>
+    </div>
+  </div>
+  <div class="top-bar-right">
+    <div class="sync-dot-small local" id="syncDotMobile"></div>
+    <button class="icon-btn" onclick="requirePassword()" title="Settings">&#9881;</button>
+  </div>
+</div>
+
+<!-- DESKTOP: SIDEBAR -->
 <aside class="sidebar">
   <div class="logo-area">
     <div class="logo-box">
@@ -218,9 +291,30 @@
     <div class="nav-item" data-page="pricing"><span>#</span> Pricing</div>
   </nav>
   <div class="sidebar-bottom">
-    <button class="theme-btn" id="themeToggle">Toggle Theme</button>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div class="sync-dot local" id="syncDotDesk"></div>
+      <span id="syncLabelDesk" style="font-size:10px;color:var(--text2);letter-spacing:0.3px">Not synced</span>
+    </div>
+    <button class="theme-btn" id="themeToggleDesk">Toggle Theme</button>
+    <button class="settings-btn-desk" onclick="requirePassword()">Settings</button>
   </div>
 </aside>
+
+<!-- MOBILE: BOTTOM TAB BAR -->
+<nav class="bottom-tab-bar" id="bottomTabBar">
+  <button class="tab-item active" data-page="dashboard">
+    <span class="tab-icon">&#9632;</span>Dashboard
+  </button>
+  <button class="tab-item" data-page="jobs">
+    <span class="tab-icon">&#9998;</span>Jobs
+  </button>
+  <button class="tab-item" data-page="inventory">
+    <span class="tab-icon">&#9741;</span>Parts
+  </button>
+  <button class="tab-item" data-page="pricing">
+    <span class="tab-icon">&#36;</span>Pricing
+  </button>
+</nav>
 
 <!-- MAIN -->
 <main class="main">
@@ -240,12 +334,15 @@
       <div class="stat-card"><div class="stat-label">Unpaid Balance</div><div class="stat-value red" id="stat-unpaid">$0.00</div></div>
     </div>
     <div class="section-title">Recent Jobs</div>
+    <!-- Desktop table -->
     <div class="table-wrap">
       <table>
         <thead><tr><th>Customer</th><th>Device</th><th>Repair</th><th>Charged</th><th>Profit</th><th>Status</th><th>Date</th></tr></thead>
         <tbody id="dashboard-recent"></tbody>
       </table>
     </div>
+    <!-- Mobile cards -->
+    <div class="job-cards" id="dashboard-recent-cards"></div>
   </div>
 
   <!-- JOBS -->
@@ -258,21 +355,22 @@
       <button class="btn btn-primary" id="addJobBtn">+ New Job</button>
     </div>
     <div class="toolbar">
-      <input type="text" class="search-input" id="jobSearch" placeholder="Search by customer, device, or repair...">
-      <select id="jobFilter" style="width:auto;padding:9px 14px;">
+      <input type="text" class="search-input" id="jobSearch" placeholder="Search customer, device...">
+      <select id="jobFilter" style="width:auto;padding:10px 14px;flex-shrink:0">
         <option value="all">All</option>
         <option value="paid">Paid</option>
         <option value="unpaid">Unpaid</option>
       </select>
     </div>
+    <!-- Desktop table -->
     <div class="table-wrap">
       <table>
-        <thead>
-          <tr><th>Customer</th><th>Phone</th><th>Device</th><th>Repair</th><th>Parts Cost</th><th>Charged</th><th>Profit</th><th>Payment</th><th>Date</th><th></th></tr>
-        </thead>
+        <thead><tr><th>Customer</th><th>Phone</th><th>Device</th><th>Repair</th><th>Parts</th><th>Charged</th><th>Profit</th><th>Payment</th><th>Date</th><th></th></tr></thead>
         <tbody id="jobs-tbody"></tbody>
       </table>
     </div>
+    <!-- Mobile cards -->
+    <div class="job-cards" id="jobs-cards"></div>
   </div>
 
   <!-- INVENTORY -->
@@ -290,7 +388,7 @@
     <div class="inv-grid" id="inv-grid"></div>
     <div id="inv-empty" class="empty-state" style="display:none">
       <div class="empty-state-title">No parts yet</div>
-      <div class="empty-state-sub">Add your first part to start tracking inventory</div>
+      <div class="empty-state-sub">Add your first part to track inventory</div>
     </div>
   </div>
 
@@ -299,16 +397,18 @@
     <div class="page-header">
       <div>
         <div class="page-title">Pricing</div>
-        <div class="page-subtitle">What you charge per repair type</div>
+        <div class="page-subtitle">What you charge per repair</div>
       </div>
       <button class="btn btn-primary" id="addPriceBtn">+ Add Service</button>
     </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Service</th><th>Device</th><th>Your Price</th><th>Parts Cost (avg)</th><th>Margin</th><th></th></tr></thead>
+        <thead><tr><th>Service</th><th>Device</th><th>Your Price</th><th>Parts Cost</th><th>Margin</th><th></th></tr></thead>
         <tbody id="pricing-tbody"></tbody>
       </table>
     </div>
+    <!-- Mobile pricing cards -->
+    <div class="job-cards" id="pricing-cards"></div>
     <div id="pricing-empty" class="empty-state" style="display:none">
       <div class="empty-state-title">No services yet</div>
       <div class="empty-state-sub">Add the repairs you offer and what you charge</div>
@@ -328,15 +428,15 @@
       <input type="hidden" id="jobEditId">
       <div class="form-row">
         <div class="form-group"><label>Customer Name</label><input type="text" id="j-customer" placeholder="John Doe"></div>
-        <div class="form-group"><label>Phone Number</label><input type="text" id="j-phone" placeholder="(555) 000-0000"></div>
+        <div class="form-group"><label>Phone Number</label><input type="tel" id="j-phone" placeholder="(555) 000-0000"></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label>Device</label><input type="text" id="j-device" placeholder="iPhone 14 Pro"></div>
         <div class="form-group"><label>Repair Type</label><input type="text" id="j-repair" placeholder="Screen Replacement"></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Parts Cost ($)</label><input type="number" id="j-parts" placeholder="0.00" min="0" step="0.01"></div>
-        <div class="form-group"><label>Amount Charged ($)</label><input type="number" id="j-charged" placeholder="0.00" min="0" step="0.01"></div>
+        <div class="form-group"><label>Parts Cost ($)</label><input type="number" id="j-parts" placeholder="0.00" min="0" step="0.01" inputmode="decimal"></div>
+        <div class="form-group"><label>Amount Charged ($)</label><input type="number" id="j-charged" placeholder="0.00" min="0" step="0.01" inputmode="decimal"></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label>Payment Status</label><select id="j-payment"><option value="unpaid">Unpaid</option><option value="paid">Paid</option></select></div>
@@ -365,10 +465,10 @@
         <div class="form-group"><label>Compatible Model</label><input type="text" id="p-model" placeholder="iPhone 13"></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Quantity in Stock</label><input type="number" id="p-qty" placeholder="0" min="0"></div>
-        <div class="form-group"><label>Cost Per Unit ($)</label><input type="number" id="p-cost" placeholder="0.00" min="0" step="0.01"></div>
+        <div class="form-group"><label>Qty in Stock</label><input type="number" id="p-qty" placeholder="0" min="0" inputmode="numeric"></div>
+        <div class="form-group"><label>Cost Per Unit ($)</label><input type="number" id="p-cost" placeholder="0.00" min="0" step="0.01" inputmode="decimal"></div>
       </div>
-      <div class="form-group"><label>Low Stock Alert (below this qty)</label><input type="number" id="p-alert" placeholder="2" min="0"></div>
+      <div class="form-group"><label>Low Stock Alert (below qty)</label><input type="number" id="p-alert" placeholder="2" min="0" inputmode="numeric"></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('partModal')">Cancel</button>
@@ -391,8 +491,8 @@
         <div class="form-group"><label>Device / Model</label><input type="text" id="pr-device" placeholder="iPhone 14"></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label>Your Price ($)</label><input type="number" id="pr-price" placeholder="0.00" min="0" step="0.01"></div>
-        <div class="form-group"><label>Avg Parts Cost ($)</label><input type="number" id="pr-cost" placeholder="0.00" min="0" step="0.01"></div>
+        <div class="form-group"><label>Your Price ($)</label><input type="number" id="pr-price" placeholder="0.00" min="0" step="0.01" inputmode="decimal"></div>
+        <div class="form-group"><label>Avg Parts Cost ($)</label><input type="number" id="pr-cost" placeholder="0.00" min="0" step="0.01" inputmode="decimal"></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -402,169 +502,210 @@
   </div>
 </div>
 
-<!-- MODAL: SHEETS SETUP -->
-<div class="modal-overlay" id="setupModal">
-  <div class="modal" style="width:600px">
+<!-- MODAL: SETTINGS (password protected) -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal" style="width:580px">
     <div class="modal-header">
-      <div class="modal-title">Connect Google Sheets</div>
-      <button class="modal-close" onclick="closeModal('setupModal')">x</button>
+      <div class="modal-title">Settings</div>
+      <button class="modal-close" onclick="closeModal('settingsModal')">x</button>
     </div>
     <div class="modal-body">
-      <p style="font-size:13px;color:var(--text2);margin-bottom:28px;line-height:1.7">Follow these 5 steps once and your data syncs across every device, browser, and phone. Takes about 10 minutes.</p>
-      <div class="setup-step">
-        <div class="setup-step-num">1</div>
-        <div>
-          <div class="setup-step-title">Create a Google Sheet</div>
-          <div class="setup-step-desc">Go to <a href="https://sheets.google.com" target="_blank">sheets.google.com</a>, create a new blank spreadsheet, and name it "Tech Revive Wireless".</div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Appearance</div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-row-label">Theme</div>
+            <div class="settings-row-sub">Switch between light and dark mode</div>
+          </div>
+          <button class="btn btn-outline btn-sm" id="themeToggleSettings">Toggle Theme</button>
         </div>
       </div>
-      <div class="setup-step">
-        <div class="setup-step-num">2</div>
-        <div>
-          <div class="setup-step-title">Open Apps Script</div>
-          <div class="setup-step-desc">In the sheet, click Extensions in the top menu, then click Apps Script. A new tab opens.</div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">Google Sheets Sync</div>
+        <p style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.7">Connect to Google Sheets so your data syncs across every device. Follow these steps once.</p>
+        <div class="setup-step">
+          <div class="setup-step-num">1</div>
+          <div>
+            <div class="setup-step-title">Create a Google Sheet</div>
+            <div class="setup-step-desc">Go to <a href="https://sheets.google.com" target="_blank">sheets.google.com</a>, create a new blank spreadsheet, name it "Tech Revive Wireless".</div>
+          </div>
         </div>
-      </div>
-      <div class="setup-step">
-        <div class="setup-step-num">3</div>
-        <div>
-          <div class="setup-step-title">Paste the backend script</div>
-          <div class="setup-step-desc">Delete everything in the editor. Paste in the code from the file <strong>google-apps-script.js</strong> that came with this app. Click the save icon (floppy disk).</div>
+        <div class="setup-step">
+          <div class="setup-step-num">2</div>
+          <div>
+            <div class="setup-step-title">Open Apps Script</div>
+            <div class="setup-step-desc">In the sheet click Extensions > Apps Script. A new tab opens.</div>
+          </div>
         </div>
-      </div>
-      <div class="setup-step">
-        <div class="setup-step-num">4</div>
-        <div>
-          <div class="setup-step-title">Deploy as Web App</div>
-          <div class="setup-step-desc">Click Deploy (top right corner), then New Deployment. Set type to Web App. Under "Who has access" select Anyone. Click Deploy. Google will ask you to authorize — click Allow.</div>
+        <div class="setup-step">
+          <div class="setup-step-num">3</div>
+          <div>
+            <div class="setup-step-title">Paste the backend script</div>
+            <div class="setup-step-desc">Delete everything in the editor. Paste the code from <strong>google-apps-script.js</strong>. Click save.</div>
+          </div>
         </div>
-      </div>
-      <div class="setup-step">
-        <div class="setup-step-num">5</div>
-        <div>
-          <div class="setup-step-title">Paste your Web App URL here</div>
-          <div class="setup-step-desc">After deploying, Google gives you a Web App URL. Copy it and paste it below.</div>
-          <input type="text" id="sheetsUrl" placeholder="https://script.google.com/macros/s/..." style="margin-top:10px">
+        <div class="setup-step">
+          <div class="setup-step-num">4</div>
+          <div>
+            <div class="setup-step-title">Deploy as Web App</div>
+            <div class="setup-step-desc">Click Deploy > New Deployment. Type: Web App. Who has access: Anyone. Click Deploy, then Allow.</div>
+          </div>
         </div>
+        <div class="setup-step">
+          <div class="setup-step-num">5</div>
+          <div>
+            <div class="setup-step-title">Paste your Web App URL below</div>
+            <input type="text" id="sheetsUrl" placeholder="https://script.google.com/macros/s/..." style="margin-top:10px">
+          </div>
+        </div>
+        <button class="btn btn-primary" style="margin-top:8px;width:100%" onclick="connectSheets()">Connect Google Sheets</button>
       </div>
+
     </div>
     <div class="modal-footer">
-      <button class="btn btn-outline" onclick="closeModal('setupModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="connectSheets()">Connect</button>
+      <button class="btn btn-outline" onclick="closeModal('settingsModal')">Close</button>
     </div>
   </div>
 </div>
 
 <script>
 const { jsPDF } = window.jspdf;
-
-const BUSINESS = {
-  name: 'Tech Revive Wireless',
-  phone: '(919) 295-0791',
-};
+const PASSWORD = 'Jesusisgreat2!';
+const BUSINESS = { name:'Tech Revive Wireless', phone:'(919) 295-0791' };
+const SHEETS_KEY = 'trw_sheets_url';
 
 // ============================================================
 // DATA
 // ============================================================
-const SHEETS_KEY = 'trw_sheets_url';
 function getSheetsUrl() { return localStorage.getItem(SHEETS_KEY) || ''; }
-
 const DB = {
-  get: (k) => JSON.parse(localStorage.getItem('trw_' + k) || '[]'),
-  set: (k, v) => localStorage.setItem('trw_' + k, JSON.stringify(v)),
+  get: k => JSON.parse(localStorage.getItem('trw_'+k) || '[]'),
+  set: (k,v) => localStorage.setItem('trw_'+k, JSON.stringify(v)),
 };
-
 const getJobs = () => DB.get('jobs');
 const getParts = () => DB.get('parts');
 const getPricing = () => DB.get('pricing');
-
-function saveJobs(d) { DB.set('jobs', d); syncToSheets('jobs', d); }
-function saveParts(d) { DB.set('parts', d); syncToSheets('parts', d); }
-function savePricing(d) { DB.set('pricing', d); syncToSheets('pricing', d); }
+function saveJobs(d) { DB.set('jobs',d); syncToSheets('jobs',d); }
+function saveParts(d) { DB.set('parts',d); syncToSheets('parts',d); }
+function savePricing(d) { DB.set('pricing',d); syncToSheets('pricing',d); }
 
 async function syncToSheets(table, data) {
-  const url = getSheetsUrl();
-  if (!url) return;
+  const url = getSheetsUrl(); if (!url) return;
   setSyncStatus('syncing');
-  try {
-    await fetch(url, { method: 'POST', body: JSON.stringify({ action: 'set', table, data }) });
-    setSyncStatus('synced');
-  } catch(e) { setSyncStatus('error'); }
+  try { await fetch(url, {method:'POST', body:JSON.stringify({action:'set',table,data})}); setSyncStatus('synced'); }
+  catch(e) { setSyncStatus('error'); }
 }
 
 async function loadFromSheets() {
-  const url = getSheetsUrl();
-  if (!url) return;
+  const url = getSheetsUrl(); if (!url) return;
   setSyncStatus('syncing');
   try {
-    const res = await fetch(url + '?action=getAll');
+    const res = await fetch(url+'?action=getAll');
     const json = await res.json();
-    if (json.jobs) DB.set('jobs', json.jobs);
-    if (json.parts) DB.set('parts', json.parts);
-    if (json.pricing) DB.set('pricing', json.pricing);
+    if (json.jobs) DB.set('jobs',json.jobs);
+    if (json.parts) DB.set('parts',json.parts);
+    if (json.pricing) DB.set('pricing',json.pricing);
     setSyncStatus('synced');
     renderDashboard(); renderJobs(); renderInventory(); renderPricing();
   } catch(e) { setSyncStatus('error'); }
 }
 
 function setSyncStatus(s) {
-  const dot = document.getElementById('syncDot');
-  const lbl = document.getElementById('syncLabel');
-  dot.className = 'sync-dot';
-  if (s === 'synced') { dot.classList.add('synced'); lbl.textContent = 'Synced to Google Sheets'; }
-  else if (s === 'syncing') { dot.classList.add('local'); lbl.textContent = 'Syncing...'; }
-  else if (s === 'error') { dot.classList.add('error'); lbl.textContent = 'Sync error — check your Sheets URL in settings'; }
-  else { dot.classList.add('local'); lbl.textContent = 'Saving locally — connect Google Sheets to sync anywhere'; }
+  const dotD = document.getElementById('syncDotDesk');
+  const dotM = document.getElementById('syncDotMobile');
+  const lblD = document.getElementById('syncLabelDesk');
+  [dotD, dotM].forEach(d => { if(d) d.className = d===dotM ? 'sync-dot-small' : 'sync-dot'; });
+  if (s==='synced') {
+    [dotD,dotM].forEach(d=>{if(d)d.classList.add('synced')});
+    if(lblD) lblD.textContent='Synced to Google Sheets';
+  } else if (s==='syncing') {
+    [dotD,dotM].forEach(d=>{if(d)d.classList.add('local')});
+    if(lblD) lblD.textContent='Syncing...';
+  } else if (s==='error') {
+    [dotD,dotM].forEach(d=>{if(d)d.classList.add('error')});
+    if(lblD) lblD.textContent='Sync error — check Settings';
+  } else {
+    [dotD,dotM].forEach(d=>{if(d)d.classList.add('local')});
+    if(lblD) lblD.textContent='Not synced — connect in Settings';
+  }
 }
 
 function connectSheets() {
   const url = document.getElementById('sheetsUrl').value.trim();
   if (!url.startsWith('https://script.google.com')) { alert('Please paste a valid Google Apps Script URL.'); return; }
   localStorage.setItem(SHEETS_KEY, url);
-  closeModal('setupModal');
+  closeModal('settingsModal');
   loadFromSheets();
+}
+
+// ============================================================
+// PASSWORD
+// ============================================================
+function requirePassword() {
+  document.getElementById('pwInput').value = '';
+  document.getElementById('pwError').textContent = '';
+  document.getElementById('pwOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('pwInput').focus(), 100);
+}
+
+function checkPassword() {
+  const val = document.getElementById('pwInput').value;
+  if (val === PASSWORD) {
+    document.getElementById('pwOverlay').classList.remove('open');
+    // Pre-fill sheets URL if already set
+    const existing = getSheetsUrl();
+    if (existing) document.getElementById('sheetsUrl').value = existing;
+    openModal('settingsModal');
+  } else {
+    document.getElementById('pwError').textContent = 'Incorrect password.';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
+  }
 }
 
 // ============================================================
 // UTILS
 // ============================================================
-const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2);
-const fmt$ = (n) => '$' + parseFloat(n || 0).toFixed(2);
-const fmtDate = (d) => d ? new Date(d + 'T00:00:00').toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}) : '';
-
+const uid = () => Date.now().toString(36)+Math.random().toString(36).slice(2);
+const fmt$ = n => '$'+parseFloat(n||0).toFixed(2);
+const fmtDate = d => d ? new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
 function getInvoiceNumber(jobId) {
-  const jobs = [...getJobs()].sort((a, b) => (a.date || '').localeCompare(b.date || ''));
-  const idx = jobs.findIndex(j => j.id === jobId);
-  return 'TRW-' + String(Math.max(idx + 1, 1)).padStart(4, '0');
+  const jobs = [...getJobs()].sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+  const idx = jobs.findIndex(j=>j.id===jobId);
+  return 'TRW-'+String(Math.max(idx+1,1)).padStart(4,'0');
 }
 
 // ============================================================
 // NAV
 // ============================================================
-document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', () => {
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    item.classList.add('active');
-    const page = item.dataset.page;
-    document.getElementById('page-' + page).classList.add('active');
-    if (page === 'dashboard') renderDashboard();
-    if (page === 'jobs') renderJobs();
-    if (page === 'inventory') renderInventory();
-    if (page === 'pricing') renderPricing();
-  });
+function navigate(page) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.page===page));
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.toggle('active', t.dataset.page===page));
+  document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id==='page-'+page));
+  if (page==='dashboard') renderDashboard();
+  if (page==='jobs') renderJobs();
+  if (page==='inventory') renderInventory();
+  if (page==='pricing') renderPricing();
+}
+
+document.querySelectorAll('.nav-item, .tab-item').forEach(item => {
+  item.addEventListener('click', () => navigate(item.dataset.page));
 });
 
 // ============================================================
 // THEME
 // ============================================================
 const html = document.documentElement;
-html.setAttribute('data-theme', localStorage.getItem('trw_theme') || 'light');
-document.getElementById('themeToggle').addEventListener('click', () => {
-  const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+html.setAttribute('data-theme', localStorage.getItem('trw_theme')||'light');
+function toggleTheme() {
+  const next = html.getAttribute('data-theme')==='light' ? 'dark' : 'light';
   html.setAttribute('data-theme', next);
   localStorage.setItem('trw_theme', next);
-});
+}
+document.getElementById('themeToggleDesk').addEventListener('click', toggleTheme);
+document.getElementById('themeToggleSettings').addEventListener('click', toggleTheme);
 
 // ============================================================
 // MODALS
@@ -572,270 +713,180 @@ document.getElementById('themeToggle').addEventListener('click', () => {
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(o => {
-  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+  o.addEventListener('click', e => { if (e.target===o && o.id!=='pwOverlay') o.classList.remove('open'); });
 });
 
 // ============================================================
 // INVOICE PDF
 // ============================================================
 function generateInvoice(jobId) {
-  const job = getJobs().find(j => j.id === jobId);
-  if (!job) return;
+  const job = getJobs().find(j=>j.id===jobId); if (!job) return;
+  const doc = new jsPDF({unit:'pt',format:'letter'});
+  const W=612, invoiceNum=getInvoiceNumber(jobId);
+  const parts=parseFloat(job.parts||0), charged=parseFloat(job.charged||0);
+  const NAVY=[26,26,46],RED=[192,57,43],GRAY=[107,104,96],LIGHT=[240,237,232],BLACK=[26,26,26],WHITE=[255,255,255];
 
-  const doc = new jsPDF({ unit: 'pt', format: 'letter' });
-  const W = 612;
-  const invoiceNum = getInvoiceNumber(jobId);
-  const parts = parseFloat(job.parts || 0);
-  const charged = parseFloat(job.charged || 0);
+  doc.setFillColor(...NAVY); doc.rect(0,0,W,90,'F');
+  doc.setTextColor(...WHITE); doc.setFont('helvetica','bold'); doc.setFontSize(24);
+  doc.text('TECH REVIVE',48,38); doc.text('WIRELESS',48,60);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(190,188,183);
+  doc.text('PROFESSIONAL MOBILE DEVICE REPAIR',48,74);
+  doc.setFillColor(...RED); doc.rect(48,79,72,2,'F');
+  doc.setTextColor(...WHITE); doc.setFont('helvetica','bold'); doc.setFontSize(30);
+  doc.text('INVOICE',W-48,44,{align:'right'});
+  doc.setFont('helvetica','normal'); doc.setFontSize(11); doc.setTextColor(190,188,183);
+  doc.text(invoiceNum,W-48,62,{align:'right'});
 
-  const NAVY = [26, 26, 46];
-  const RED = [192, 57, 43];
-  const GRAY = [107, 104, 96];
-  const LIGHTBG = [240, 237, 232];
-  const BLACK = [26, 26, 26];
-  const WHITE = [255, 255, 255];
+  let y=122;
+  doc.setFillColor(...LIGHT); doc.rect(48,y-14,230,84,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...GRAY); doc.text('BILL TO',62,y);
+  doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(...NAVY); doc.text(job.customer||'Customer',62,y+18);
+  doc.setFont('helvetica','normal'); doc.setFontSize(11); doc.setTextColor(...BLACK);
+  if(job.phone) doc.text(job.phone,62,y+34);
 
-  // Header
-  doc.setFillColor(...NAVY);
-  doc.rect(0, 0, W, 90, 'F');
+  const rx=W-200;
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...GRAY); doc.text('DATE ISSUED',rx,y);
+  doc.setFont('helvetica','normal'); doc.setFontSize(11); doc.setTextColor(...BLACK); doc.text(fmtDate(job.date)||'-',rx,y+16);
+  doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...GRAY); doc.text('INVOICE NO.',rx,y+34);
+  doc.setFont('helvetica','normal'); doc.setFontSize(11); doc.setTextColor(...BLACK); doc.text(invoiceNum,rx,y+50);
 
-  doc.setTextColor(...WHITE);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(24);
-  doc.text('TECH REVIVE', 48, 38);
-  doc.setFontSize(24);
-  doc.text('WIRELESS', 48, 60);
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(8);
-  doc.setTextColor(190, 188, 183);
-  doc.text('PROFESSIONAL MOBILE DEVICE REPAIR', 48, 74);
-  doc.setFillColor(...RED);
-  doc.rect(48, 79, 72, 2, 'F');
+  y=232;
+  doc.setFillColor(...NAVY); doc.rect(48,y,W-96,28,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...WHITE);
+  doc.text('DESCRIPTION',62,y+18); doc.text('DEVICE',290,y+18); doc.text('AMOUNT',W-62,y+18,{align:'right'});
+  y+=28;
 
-  doc.setTextColor(...WHITE);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(30);
-  doc.text('INVOICE', W - 48, 44, { align: 'right' });
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(11);
-  doc.setTextColor(190, 188, 183);
-  doc.text(invoiceNum, W - 48, 62, { align: 'right' });
+  doc.setFillColor(...WHITE); doc.rect(48,y,W-96,38,'F');
+  doc.setFont('helvetica','normal'); doc.setFontSize(11); doc.setTextColor(...BLACK);
+  doc.text(job.repair||'Repair Service',62,y+24); doc.text(job.device||'-',290,y+24);
+  doc.setFont('helvetica','bold'); doc.text(fmt$(charged),W-62,y+24,{align:'right'});
 
-  // Bill To
-  let y = 122;
-  doc.setFillColor(...LIGHTBG);
-  doc.rect(48, y - 14, 230, 84, 'F');
+  if(parts>0) {
+    y+=38; doc.setFillColor(...LIGHT); doc.rect(48,y,W-96,38,'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(11); doc.setTextColor(...BLACK);
+    doc.text('Parts & Components (included)',62,y+24); doc.text(job.device||'-',290,y+24);
+    doc.setFont('helvetica','italic'); doc.setFontSize(10); doc.setTextColor(...GRAY);
+    doc.text('included in total',W-62,y+24,{align:'right'}); y+=38;
+  } else { y+=38; }
 
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8);
-  doc.setTextColor(...GRAY);
-  doc.text('BILL TO', 62, y);
-
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(14);
-  doc.setTextColor(...NAVY);
-  doc.text(job.customer || 'Customer', 62, y + 18);
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(11);
-  doc.setTextColor(...BLACK);
-  if (job.phone) doc.text(job.phone, 62, y + 34);
-
-  // Right side info
-  const rx = W - 200;
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8);
-  doc.setTextColor(...GRAY);
-  doc.text('DATE ISSUED', rx, y);
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(11);
-  doc.setTextColor(...BLACK);
-  doc.text(fmtDate(job.date) || '-', rx, y + 16);
-
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(8);
-  doc.setTextColor(...GRAY);
-  doc.text('INVOICE NO.', rx, y + 34);
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(11);
-  doc.setTextColor(...BLACK);
-  doc.text(invoiceNum, rx, y + 50);
-
-  // Table header
-  y = 232;
-  doc.setFillColor(...NAVY);
-  doc.rect(48, y, W - 96, 28, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(9);
-  doc.setTextColor(...WHITE);
-  doc.text('DESCRIPTION', 62, y + 18);
-  doc.text('DEVICE', 290, y + 18);
-  doc.text('AMOUNT', W - 62, y + 18, { align: 'right' });
-
-  // Row 1: repair service
-  y += 28;
-  doc.setFillColor(...WHITE);
-  doc.rect(48, y, W - 96, 38, 'F');
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(11);
-  doc.setTextColor(...BLACK);
-  doc.text(job.repair || 'Repair Service', 62, y + 24);
-  doc.text(job.device || '-', 290, y + 24);
-  doc.setFont('helvetica', 'bold');
-  doc.text(fmt$(charged), W - 62, y + 24, { align: 'right' });
-
-  // Row 2: parts (if any)
-  if (parts > 0) {
-    y += 38;
-    doc.setFillColor(...LIGHTBG);
-    doc.rect(48, y, W - 96, 38, 'F');
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(11);
-    doc.setTextColor(...BLACK);
-    doc.text('Parts & Components (included)', 62, y + 24);
-    doc.text(job.device || '-', 290, y + 24);
-    doc.setFont('helvetica', 'italic');
-    doc.setFontSize(10);
-    doc.setTextColor(...GRAY);
-    doc.text('included in total', W - 62, y + 24, { align: 'right' });
-    y += 38;
-  } else {
-    y += 38;
+  if(job.notes) {
+    doc.setFillColor(250,249,246); doc.rect(48,y,W-96,34,'F');
+    doc.setFont('helvetica','italic'); doc.setFontSize(9); doc.setTextColor(...GRAY);
+    doc.text('Note: '+job.notes,62,y+21); y+=34;
   }
 
-  // Notes
-  if (job.notes) {
-    doc.setFillColor(250, 249, 246);
-    doc.rect(48, y, W - 96, 34, 'F');
-    doc.setFont('helvetica', 'italic');
-    doc.setFontSize(9);
-    doc.setTextColor(...GRAY);
-    doc.text('Note: ' + job.notes, 62, y + 21);
-    y += 34;
-  }
+  doc.setDrawColor(...NAVY); doc.setLineWidth(.5); doc.rect(48,232,W-96,y-232);
+  y+=24; const tx=W-230;
+  doc.setDrawColor(...LIGHT); doc.setLineWidth(1); doc.line(tx,y,W-48,y); y+=18;
+  doc.setFont('helvetica','normal'); doc.setFontSize(11); doc.setTextColor(...GRAY); doc.text('Subtotal',tx,y);
+  doc.setTextColor(...BLACK); doc.text(fmt$(charged),W-48,y,{align:'right'}); y+=22;
+  doc.setFillColor(...NAVY); doc.rect(tx-10,y-14,W-tx-38,32,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...WHITE);
+  doc.text('TOTAL DUE',tx,y+6); doc.text(fmt$(charged),W-48,y+6,{align:'right'}); y+=42;
 
-  // Table border
-  doc.setDrawColor(...NAVY);
-  doc.setLineWidth(0.5);
-  doc.rect(48, 232, W - 96, y - 232);
+  const isPaid=job.payment==='paid';
+  doc.setFillColor(...(isPaid?[45,106,79]:[192,57,43]));
+  doc.roundedRect(tx-10,y,130,28,3,3,'F');
+  doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...WHITE);
+  doc.text(isPaid?'PAID IN FULL':'BALANCE DUE',tx+55,y+18,{align:'center'});
 
-  // Totals
-  y += 24;
-  const tx = W - 230;
+  const fy=722;
+  doc.setDrawColor(...LIGHT); doc.setLineWidth(1); doc.line(48,fy,W-48,fy);
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...GRAY);
+  doc.text(BUSINESS.name,48,fy+18); doc.text(BUSINESS.phone,48,fy+32);
+  doc.text('Thank you for your business.',W-48,fy+18,{align:'right'});
+  doc.setFillColor(...RED); doc.rect(0,768,W,4,'F');
 
-  doc.setDrawColor(...LIGHTBG);
-  doc.setLineWidth(1);
-  doc.line(tx, y, W - 48, y);
-  y += 18;
-
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(11);
-  doc.setTextColor(...GRAY);
-  doc.text('Subtotal', tx, y);
-  doc.setTextColor(...BLACK);
-  doc.text(fmt$(charged), W - 48, y, { align: 'right' });
-  y += 22;
-
-  doc.setFillColor(...NAVY);
-  doc.rect(tx - 10, y - 14, W - tx - 38, 32, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(13);
-  doc.setTextColor(...WHITE);
-  doc.text('TOTAL DUE', tx, y + 6);
-  doc.text(fmt$(charged), W - 48, y + 6, { align: 'right' });
-
-  y += 42;
-
-  // Payment status
-  const isPaid = job.payment === 'paid';
-  doc.setFillColor(...(isPaid ? [45, 106, 79] : [192, 57, 43]));
-  doc.roundedRect(tx - 10, y, 130, 28, 3, 3, 'F');
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(11);
-  doc.setTextColor(...WHITE);
-  doc.text(isPaid ? 'PAID IN FULL' : 'BALANCE DUE', tx + 55, y + 18, { align: 'center' });
-
-  // Footer
-  const fy = 722;
-  doc.setDrawColor(...LIGHTBG);
-  doc.setLineWidth(1);
-  doc.line(48, fy, W - 48, fy);
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.setTextColor(...GRAY);
-  doc.text(BUSINESS.name, 48, fy + 18);
-  doc.text(BUSINESS.phone, 48, fy + 32);
-  doc.text('Thank you for your business.', W - 48, fy + 18, { align: 'right' });
-  doc.setFillColor(...RED);
-  doc.rect(0, 768, W, 4, 'F');
-
-  doc.save(invoiceNum + '_' + (job.customer || 'invoice').replace(/\s+/g, '_') + '.pdf');
+  doc.save(invoiceNum+'_'+(job.customer||'invoice').replace(/\s+/g,'_')+'.pdf');
 }
 
 // ============================================================
 // DASHBOARD
 // ============================================================
 function renderDashboard() {
-  const jobs = getJobs();
-  const now = new Date();
-  const thisMonth = jobs.filter(j => {
-    if (!j.date) return false;
-    const d = new Date(j.date + 'T00:00:00');
-    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  const jobs=getJobs(), now=new Date();
+  const thisMonth=jobs.filter(j=>{
+    if(!j.date) return false;
+    const d=new Date(j.date+'T00:00:00');
+    return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();
   });
-  const paid = jobs.filter(j => j.payment === 'paid');
-  document.getElementById('stat-revenue').textContent = fmt$(paid.reduce((s,j) => s + parseFloat(j.charged||0), 0));
-  document.getElementById('stat-profit').textContent = fmt$(paid.reduce((s,j) => s + parseFloat(j.charged||0) - parseFloat(j.parts||0), 0));
-  document.getElementById('stat-jobs').textContent = thisMonth.length;
-  document.getElementById('stat-unpaid').textContent = fmt$(jobs.filter(j=>j.payment==='unpaid').reduce((s,j)=>s+parseFloat(j.charged||0),0));
+  const paid=jobs.filter(j=>j.payment==='paid');
+  document.getElementById('stat-revenue').textContent=fmt$(paid.reduce((s,j)=>s+parseFloat(j.charged||0),0));
+  document.getElementById('stat-profit').textContent=fmt$(paid.reduce((s,j)=>s+parseFloat(j.charged||0)-parseFloat(j.parts||0),0));
+  document.getElementById('stat-jobs').textContent=thisMonth.length;
+  document.getElementById('stat-unpaid').textContent=fmt$(jobs.filter(j=>j.payment==='unpaid').reduce((s,j)=>s+parseFloat(j.charged||0),0));
 
-  const recent = [...jobs].sort((a,b) => (b.date||'').localeCompare(a.date||'')).slice(0,10);
-  const tbody = document.getElementById('dashboard-recent');
-  if (!recent.length) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text2)">No jobs yet. Head to Jobs to log your first repair.</td></tr>`;
+  const recent=[...jobs].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,10);
+  const empty=`<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text2)">No jobs yet. Head to Jobs to log your first repair.</td></tr>`;
+
+  if(!recent.length) {
+    document.getElementById('dashboard-recent').innerHTML=empty;
+    document.getElementById('dashboard-recent-cards').innerHTML='<div class="empty-state"><div class="empty-state-title">No jobs yet</div><div class="empty-state-sub">Head to Jobs to log your first repair</div></div>';
     return;
   }
-  tbody.innerHTML = recent.map(j => {
-    const p = parseFloat(j.charged||0) - parseFloat(j.parts||0);
-    return `<tr>
-      <td><strong>${j.customer}</strong></td><td>${j.device}</td><td>${j.repair}</td>
-      <td>${fmt$(j.charged)}</td>
-      <td class="${p>=0?'profit-pos':'profit-neg'}">${fmt$(p)}</td>
-      <td><span class="badge badge-${j.payment}">${j.payment}</span></td>
-      <td style="color:var(--text2)">${fmtDate(j.date)}</td>
-    </tr>`;
+  document.getElementById('dashboard-recent').innerHTML=recent.map(j=>{
+    const p=parseFloat(j.charged||0)-parseFloat(j.parts||0);
+    return `<tr><td><strong>${j.customer}</strong></td><td>${j.device}</td><td>${j.repair}</td><td>${fmt$(j.charged)}</td><td class="${p>=0?'profit-pos':'profit-neg'}">${fmt$(p)}</td><td><span class="badge badge-${j.payment}">${j.payment}</span></td><td style="color:var(--text2)">${fmtDate(j.date)}</td></tr>`;
   }).join('');
+  document.getElementById('dashboard-recent-cards').innerHTML=recent.map(j=>jobCard(j,false)).join('');
 }
 
 // ============================================================
 // JOBS
 // ============================================================
-document.getElementById('addJobBtn').addEventListener('click', () => {
-  document.getElementById('jobModalTitle').textContent = 'New Job';
-  document.getElementById('jobEditId').value = '';
-  ['j-customer','j-phone','j-device','j-repair','j-parts','j-charged','j-notes'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('j-payment').value = 'unpaid';
-  document.getElementById('j-date').value = new Date().toISOString().split('T')[0];
+function jobCard(j, showEdit=true) {
+  const p=parseFloat(j.charged||0)-parseFloat(j.parts||0);
+  return `<div class="job-card">
+    <div class="job-card-top">
+      <div>
+        <div class="job-card-name">${j.customer}</div>
+        <div class="job-card-device">${j.device}${j.phone?' · '+j.phone:''}</div>
+      </div>
+      <span class="badge badge-${j.payment}" style="cursor:pointer" onclick="${showEdit?`togglePay('${j.id}')`:''}"">${j.payment}</span>
+    </div>
+    <div class="job-card-repair">${j.repair||''}</div>
+    <div class="job-card-nums">
+      <div><div class="job-card-num-label">Parts</div><div class="job-card-num-val" style="color:var(--text2)">${fmt$(j.parts)}</div></div>
+      <div><div class="job-card-num-label">Charged</div><div class="job-card-num-val">${fmt$(j.charged)}</div></div>
+      <div><div class="job-card-num-label">Profit</div><div class="job-card-num-val ${p>=0?'profit-pos':'profit-neg'}">${fmt$(p)}</div></div>
+    </div>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:8px">${fmtDate(j.date)}</div>
+    ${showEdit?`<div class="job-card-actions">
+      <button class="btn-invoice" onclick="generateInvoice('${j.id}')">Invoice</button>
+      <button class="btn btn-outline btn-sm" onclick="editJob('${j.id}')">Edit</button>
+      <button class="btn btn-danger" onclick="deleteJob('${j.id}')">Del</button>
+    </div>`:''}
+  </div>`;
+}
+
+document.getElementById('addJobBtn').addEventListener('click',()=>{
+  document.getElementById('jobModalTitle').textContent='New Job';
+  document.getElementById('jobEditId').value='';
+  ['j-customer','j-phone','j-device','j-repair','j-parts','j-charged','j-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('j-payment').value='unpaid';
+  document.getElementById('j-date').value=new Date().toISOString().split('T')[0];
   openModal('jobModal');
 });
-document.getElementById('jobSearch').addEventListener('input', renderJobs);
-document.getElementById('jobFilter').addEventListener('change', renderJobs);
+document.getElementById('jobSearch').addEventListener('input',renderJobs);
+document.getElementById('jobFilter').addEventListener('change',renderJobs);
 
 function renderJobs() {
-  const jobs = getJobs();
-  const q = document.getElementById('jobSearch').value.toLowerCase();
-  const filter = document.getElementById('jobFilter').value;
-  const filtered = jobs
-    .filter(j => (!q || [j.customer,j.device,j.repair||''].some(v=>v.toLowerCase().includes(q))) && (filter==='all'||j.payment===filter))
-    .sort((a,b) => (b.date||'').localeCompare(a.date||''));
+  const jobs=getJobs();
+  const q=document.getElementById('jobSearch').value.toLowerCase();
+  const filter=document.getElementById('jobFilter').value;
+  const filtered=jobs
+    .filter(j=>(!q||[j.customer,j.device,j.repair||''].some(v=>v.toLowerCase().includes(q)))&&(filter==='all'||j.payment===filter))
+    .sort((a,b)=>(b.date||'').localeCompare(a.date||''));
 
-  const tbody = document.getElementById('jobs-tbody');
-  if (!filtered.length) {
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text2)">${!jobs.length?'No jobs yet. Log your first repair.':'No matching jobs.'}</td></tr>`;
+  const noMatch=`<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--text2)">${!jobs.length?'No jobs yet. Log your first repair.':'No matching jobs.'}</td></tr>`;
+
+  if(!filtered.length) {
+    document.getElementById('jobs-tbody').innerHTML=noMatch;
+    document.getElementById('jobs-cards').innerHTML='<div class="empty-state"><div class="empty-state-title">'+(jobs.length?'No matches':'No jobs yet')+'</div></div>';
     return;
   }
-  tbody.innerHTML = filtered.map(j => {
-    const p = parseFloat(j.charged||0) - parseFloat(j.parts||0);
+  document.getElementById('jobs-tbody').innerHTML=filtered.map(j=>{
+    const p=parseFloat(j.charged||0)-parseFloat(j.parts||0);
     return `<tr>
       <td><strong>${j.customer}</strong></td>
       <td style="color:var(--text2)">${j.phone||'-'}</td>
@@ -843,100 +894,91 @@ function renderJobs() {
       <td style="color:var(--text2)">${fmt$(j.parts)}</td>
       <td>${fmt$(j.charged)}</td>
       <td class="${p>=0?'profit-pos':'profit-neg'}">${fmt$(p)}</td>
-      <td><button class="toggle-pay badge badge-${j.payment}" onclick="togglePay('${j.id}')" title="Click to toggle payment">${j.payment}</button></td>
+      <td><button class="toggle-pay badge badge-${j.payment}" onclick="togglePay('${j.id}')" title="Click to toggle">${j.payment}</button></td>
       <td style="color:var(--text2)">${fmtDate(j.date)}</td>
-      <td>
-        <div class="action-btns">
-          <button class="btn-invoice" onclick="generateInvoice('${j.id}')">Invoice</button>
-          <button class="btn btn-outline btn-sm" onclick="editJob('${j.id}')">Edit</button>
-          <button class="btn btn-danger" onclick="deleteJob('${j.id}')">Del</button>
-        </div>
-      </td>
+      <td><div class="action-btns">
+        <button class="btn-invoice" onclick="generateInvoice('${j.id}')">Invoice</button>
+        <button class="btn btn-outline btn-sm" onclick="editJob('${j.id}')">Edit</button>
+        <button class="btn btn-danger" onclick="deleteJob('${j.id}')">Del</button>
+      </div></td>
     </tr>`;
   }).join('');
+  document.getElementById('jobs-cards').innerHTML=filtered.map(j=>jobCard(j,true)).join('');
 }
 
 function saveJob() {
-  const id = document.getElementById('jobEditId').value;
-  const job = {
-    id: id || uid(),
-    customer: document.getElementById('j-customer').value.trim(),
-    phone: document.getElementById('j-phone').value.trim(),
-    device: document.getElementById('j-device').value.trim(),
-    repair: document.getElementById('j-repair').value.trim(),
-    parts: parseFloat(document.getElementById('j-parts').value) || 0,
-    charged: parseFloat(document.getElementById('j-charged').value) || 0,
-    payment: document.getElementById('j-payment').value,
-    date: document.getElementById('j-date').value,
-    notes: document.getElementById('j-notes').value.trim(),
+  const id=document.getElementById('jobEditId').value;
+  const job={
+    id:id||uid(),
+    customer:document.getElementById('j-customer').value.trim(),
+    phone:document.getElementById('j-phone').value.trim(),
+    device:document.getElementById('j-device').value.trim(),
+    repair:document.getElementById('j-repair').value.trim(),
+    parts:parseFloat(document.getElementById('j-parts').value)||0,
+    charged:parseFloat(document.getElementById('j-charged').value)||0,
+    payment:document.getElementById('j-payment').value,
+    date:document.getElementById('j-date').value,
+    notes:document.getElementById('j-notes').value.trim(),
   };
-  if (!job.customer || !job.device) { alert('Customer name and device are required.'); return; }
-  const jobs = getJobs();
-  if (id) { jobs[jobs.findIndex(j=>j.id===id)] = job; } else { jobs.push(job); }
-  saveJobs(jobs);
-  closeModal('jobModal');
-  renderJobs(); renderDashboard();
+  if(!job.customer||!job.device){alert('Customer name and device are required.');return;}
+  const jobs=getJobs();
+  if(id){jobs[jobs.findIndex(j=>j.id===id)]=job;}else{jobs.push(job);}
+  saveJobs(jobs); closeModal('jobModal'); renderJobs(); renderDashboard();
 }
 
 function editJob(id) {
-  const job = getJobs().find(j => j.id === id);
-  if (!job) return;
-  document.getElementById('jobModalTitle').textContent = 'Edit Job';
-  document.getElementById('jobEditId').value = job.id;
-  document.getElementById('j-customer').value = job.customer;
-  document.getElementById('j-phone').value = job.phone || '';
-  document.getElementById('j-device').value = job.device;
-  document.getElementById('j-repair').value = job.repair;
-  document.getElementById('j-parts').value = job.parts;
-  document.getElementById('j-charged').value = job.charged;
-  document.getElementById('j-payment').value = job.payment;
-  document.getElementById('j-date').value = job.date;
-  document.getElementById('j-notes').value = job.notes || '';
+  const job=getJobs().find(j=>j.id===id); if(!job) return;
+  document.getElementById('jobModalTitle').textContent='Edit Job';
+  document.getElementById('jobEditId').value=job.id;
+  document.getElementById('j-customer').value=job.customer;
+  document.getElementById('j-phone').value=job.phone||'';
+  document.getElementById('j-device').value=job.device;
+  document.getElementById('j-repair').value=job.repair;
+  document.getElementById('j-parts').value=job.parts;
+  document.getElementById('j-charged').value=job.charged;
+  document.getElementById('j-payment').value=job.payment;
+  document.getElementById('j-date').value=job.date;
+  document.getElementById('j-notes').value=job.notes||'';
   openModal('jobModal');
 }
 
 function deleteJob(id) {
-  if (!confirm('Delete this job? This cannot be undone.')) return;
-  saveJobs(getJobs().filter(j => j.id !== id));
-  renderJobs(); renderDashboard();
+  if(!confirm('Delete this job? This cannot be undone.')) return;
+  saveJobs(getJobs().filter(j=>j.id!==id)); renderJobs(); renderDashboard();
 }
 
 function togglePay(id) {
-  const jobs = getJobs();
-  const job = jobs.find(j => j.id === id);
-  if (!job) return;
-  job.payment = job.payment === 'paid' ? 'unpaid' : 'paid';
-  saveJobs(jobs);
-  renderJobs(); renderDashboard();
+  const jobs=getJobs(); const job=jobs.find(j=>j.id===id); if(!job) return;
+  job.payment=job.payment==='paid'?'unpaid':'paid';
+  saveJobs(jobs); renderJobs(); renderDashboard();
 }
 
 // ============================================================
 // INVENTORY
 // ============================================================
-document.getElementById('addPartBtn').addEventListener('click', () => {
-  document.getElementById('partModalTitle').textContent = 'Add Part';
-  document.getElementById('partEditId').value = '';
-  ['p-name','p-model','p-qty','p-cost','p-alert'].forEach(id => document.getElementById(id).value = '');
+document.getElementById('addPartBtn').addEventListener('click',()=>{
+  document.getElementById('partModalTitle').textContent='Add Part';
+  document.getElementById('partEditId').value='';
+  ['p-name','p-model','p-qty','p-cost','p-alert'].forEach(id=>document.getElementById(id).value='');
   openModal('partModal');
 });
-document.getElementById('invSearch').addEventListener('input', renderInventory);
+document.getElementById('invSearch').addEventListener('input',renderInventory);
 
 function renderInventory() {
-  const parts = getParts();
-  const q = document.getElementById('invSearch').value.toLowerCase();
-  const filtered = parts.filter(p => !q || p.name.toLowerCase().includes(q) || (p.model||'').toLowerCase().includes(q));
-  const grid = document.getElementById('inv-grid');
-  const empty = document.getElementById('inv-empty');
-  if (!filtered.length) { grid.innerHTML = ''; empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  grid.innerHTML = filtered.map(p => {
-    const low = p.qty <= (p.alert || 2);
+  const parts=getParts();
+  const q=document.getElementById('invSearch').value.toLowerCase();
+  const filtered=parts.filter(p=>!q||p.name.toLowerCase().includes(q)||(p.model||'').toLowerCase().includes(q));
+  const grid=document.getElementById('inv-grid'), empty=document.getElementById('inv-empty');
+  if(!filtered.length){grid.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  grid.innerHTML=filtered.map(p=>{
+    const low=p.qty<=(p.alert||2);
     return `<div class="inv-card">
       <div class="inv-card-name">${p.name}</div>
-      <div class="inv-card-model">${p.model || 'All models'}</div>
+      <div class="inv-card-model">${p.model||'All models'}</div>
       <div class="inv-card-row"><span class="inv-card-label">In Stock</span><span class="inv-card-val ${low?'stock-low':'stock-ok'}">${p.qty}${low?' (LOW)':''}</span></div>
       <div class="inv-card-row"><span class="inv-card-label">Cost / Unit</span><span class="inv-card-val">${fmt$(p.cost)}</span></div>
-      <div class="inv-card-row"><span class="inv-card-label">Total Value</span><span class="inv-card-val">${fmt$(p.qty * p.cost)}</span></div>
+      <div class="inv-card-row"><span class="inv-card-label">Total Value</span><span class="inv-card-val">${fmt$(p.qty*p.cost)}</span></div>
       <div class="inv-card-actions">
         <button class="btn btn-outline btn-sm" style="flex:1" onclick="editPart('${p.id}')">Edit</button>
         <button class="btn btn-danger" onclick="deletePart('${p.id}')">Del</button>
@@ -946,114 +988,125 @@ function renderInventory() {
 }
 
 function savePart() {
-  const id = document.getElementById('partEditId').value;
-  const part = {
-    id: id || uid(),
-    name: document.getElementById('p-name').value.trim(),
-    model: document.getElementById('p-model').value.trim(),
-    qty: parseInt(document.getElementById('p-qty').value) || 0,
-    cost: parseFloat(document.getElementById('p-cost').value) || 0,
-    alert: parseInt(document.getElementById('p-alert').value) || 2,
+  const id=document.getElementById('partEditId').value;
+  const part={
+    id:id||uid(),
+    name:document.getElementById('p-name').value.trim(),
+    model:document.getElementById('p-model').value.trim(),
+    qty:parseInt(document.getElementById('p-qty').value)||0,
+    cost:parseFloat(document.getElementById('p-cost').value)||0,
+    alert:parseInt(document.getElementById('p-alert').value)||2,
   };
-  if (!part.name) { alert('Part name is required.'); return; }
-  const parts = getParts();
-  if (id) { parts[parts.findIndex(p=>p.id===id)] = part; } else { parts.push(part); }
-  saveParts(parts);
-  closeModal('partModal');
-  renderInventory();
+  if(!part.name){alert('Part name is required.');return;}
+  const parts=getParts();
+  if(id){parts[parts.findIndex(p=>p.id===id)]=part;}else{parts.push(part);}
+  saveParts(parts); closeModal('partModal'); renderInventory();
 }
 
 function editPart(id) {
-  const p = getParts().find(p => p.id === id);
-  if (!p) return;
-  document.getElementById('partModalTitle').textContent = 'Edit Part';
-  document.getElementById('partEditId').value = p.id;
-  document.getElementById('p-name').value = p.name;
-  document.getElementById('p-model').value = p.model || '';
-  document.getElementById('p-qty').value = p.qty;
-  document.getElementById('p-cost').value = p.cost;
-  document.getElementById('p-alert').value = p.alert || 2;
+  const p=getParts().find(p=>p.id===id); if(!p) return;
+  document.getElementById('partModalTitle').textContent='Edit Part';
+  document.getElementById('partEditId').value=p.id;
+  document.getElementById('p-name').value=p.name;
+  document.getElementById('p-model').value=p.model||'';
+  document.getElementById('p-qty').value=p.qty;
+  document.getElementById('p-cost').value=p.cost;
+  document.getElementById('p-alert').value=p.alert||2;
   openModal('partModal');
 }
 
 function deletePart(id) {
-  if (!confirm('Delete this part?')) return;
-  saveParts(getParts().filter(p => p.id !== id));
-  renderInventory();
+  if(!confirm('Delete this part?')) return;
+  saveParts(getParts().filter(p=>p.id!==id)); renderInventory();
 }
 
 // ============================================================
 // PRICING
 // ============================================================
-document.getElementById('addPriceBtn').addEventListener('click', () => {
-  document.getElementById('priceModalTitle').textContent = 'Add Service';
-  document.getElementById('prEditId').value = '';
-  ['pr-service','pr-device','pr-price','pr-cost'].forEach(id => document.getElementById(id).value = '');
+document.getElementById('addPriceBtn').addEventListener('click',()=>{
+  document.getElementById('priceModalTitle').textContent='Add Service';
+  document.getElementById('prEditId').value='';
+  ['pr-service','pr-device','pr-price','pr-cost'].forEach(id=>document.getElementById(id).value='');
   openModal('priceModal');
 });
 
 function renderPricing() {
-  const pricing = getPricing();
-  const tbody = document.getElementById('pricing-tbody');
-  const empty = document.getElementById('pricing-empty');
-  if (!pricing.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  tbody.innerHTML = pricing.map(p => {
-    const margin = parseFloat(p.price||0) - parseFloat(p.cost||0);
-    const pct = p.price > 0 ? Math.round((margin/p.price)*100) : 0;
+  const pricing=getPricing();
+  const tbody=document.getElementById('pricing-tbody');
+  const cards=document.getElementById('pricing-cards');
+  const empty=document.getElementById('pricing-empty');
+  if(!pricing.length){tbody.innerHTML='';cards.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=pricing.map(p=>{
+    const margin=parseFloat(p.price||0)-parseFloat(p.cost||0);
+    const pct=p.price>0?Math.round((margin/p.price)*100):0;
     return `<tr>
       <td><strong>${p.service}</strong></td>
       <td style="color:var(--text2)">${p.device||'-'}</td>
       <td>${fmt$(p.price)}</td>
       <td style="color:var(--text2)">${fmt$(p.cost)}</td>
-      <td class="${margin>=0?'profit-pos':'profit-neg'}">${fmt$(margin)} <span style="font-size:11px;opacity:0.7">(${pct}%)</span></td>
+      <td class="${margin>=0?'profit-pos':'profit-neg'}">${fmt$(margin)} <span style="font-size:11px;opacity:.7">(${pct}%)</span></td>
       <td><div class="action-btns">
         <button class="btn btn-outline btn-sm" onclick="editPrice('${p.id}')">Edit</button>
         <button class="btn btn-danger" onclick="deletePrice('${p.id}')">Del</button>
       </div></td>
     </tr>`;
   }).join('');
+  cards.innerHTML=pricing.map(p=>{
+    const margin=parseFloat(p.price||0)-parseFloat(p.cost||0);
+    const pct=p.price>0?Math.round((margin/p.price)*100):0;
+    return `<div class="job-card">
+      <div class="job-card-top">
+        <div><div class="job-card-name">${p.service}</div><div class="job-card-device">${p.device||'All devices'}</div></div>
+      </div>
+      <div class="job-card-nums">
+        <div><div class="job-card-num-label">Your Price</div><div class="job-card-num-val">${fmt$(p.price)}</div></div>
+        <div><div class="job-card-num-label">Parts Cost</div><div class="job-card-num-val" style="color:var(--text2)">${fmt$(p.cost)}</div></div>
+        <div><div class="job-card-num-label">Margin</div><div class="job-card-num-val ${margin>=0?'profit-pos':'profit-neg'}">${fmt$(margin)} (${pct}%)</div></div>
+      </div>
+      <div class="job-card-actions">
+        <button class="btn btn-outline btn-sm" style="flex:1" onclick="editPrice('${p.id}')">Edit</button>
+        <button class="btn btn-danger" onclick="deletePrice('${p.id}')">Del</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function savePrice() {
-  const id = document.getElementById('prEditId').value;
-  const item = {
-    id: id || uid(),
-    service: document.getElementById('pr-service').value.trim(),
-    device: document.getElementById('pr-device').value.trim(),
-    price: parseFloat(document.getElementById('pr-price').value) || 0,
-    cost: parseFloat(document.getElementById('pr-cost').value) || 0,
+  const id=document.getElementById('prEditId').value;
+  const item={
+    id:id||uid(),
+    service:document.getElementById('pr-service').value.trim(),
+    device:document.getElementById('pr-device').value.trim(),
+    price:parseFloat(document.getElementById('pr-price').value)||0,
+    cost:parseFloat(document.getElementById('pr-cost').value)||0,
   };
-  if (!item.service) { alert('Service name is required.'); return; }
-  const pricing = getPricing();
-  if (id) { pricing[pricing.findIndex(p=>p.id===id)] = item; } else { pricing.push(item); }
-  savePricing(pricing);
-  closeModal('priceModal');
-  renderPricing();
+  if(!item.service){alert('Service name is required.');return;}
+  const pricing=getPricing();
+  if(id){pricing[pricing.findIndex(p=>p.id===id)]=item;}else{pricing.push(item);}
+  savePricing(pricing); closeModal('priceModal'); renderPricing();
 }
 
 function editPrice(id) {
-  const p = getPricing().find(p => p.id === id);
-  if (!p) return;
-  document.getElementById('priceModalTitle').textContent = 'Edit Service';
-  document.getElementById('prEditId').value = p.id;
-  document.getElementById('pr-service').value = p.service;
-  document.getElementById('pr-device').value = p.device || '';
-  document.getElementById('pr-price').value = p.price;
-  document.getElementById('pr-cost').value = p.cost;
+  const p=getPricing().find(p=>p.id===id); if(!p) return;
+  document.getElementById('priceModalTitle').textContent='Edit Service';
+  document.getElementById('prEditId').value=p.id;
+  document.getElementById('pr-service').value=p.service;
+  document.getElementById('pr-device').value=p.device||'';
+  document.getElementById('pr-price').value=p.price;
+  document.getElementById('pr-cost').value=p.cost;
   openModal('priceModal');
 }
 
 function deletePrice(id) {
-  if (!confirm('Delete this service?')) return;
-  savePricing(getPricing().filter(p => p.id !== id));
-  renderPricing();
+  if(!confirm('Delete this service?')) return;
+  savePricing(getPricing().filter(p=>p.id!==id)); renderPricing();
 }
 
 // ============================================================
 // INIT
 // ============================================================
-if (getSheetsUrl()) { setSyncStatus('synced'); loadFromSheets(); }
+if(getSheetsUrl()){setSyncStatus('synced');loadFromSheets();}
 renderDashboard();
 </script>
 </body>
