@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Tech Revive">
+<meta name="mobile-web-app-capable" content="yes">
 <title>Tech Revive Wireless</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -576,10 +580,15 @@ const PASSWORD = 'Jesusisgreat2!';
 const BUSINESS = { name:'Tech Revive Wireless', phone:'(919) 295-0791' };
 const SHEETS_KEY = 'trw_sheets_url';
 
+// Cookie helpers — survive iOS Safari PWA resets
+function setCookie(name,value,days){const d=new Date();d.setTime(d.getTime()+days*864e5);document.cookie=name+'='+encodeURIComponent(value)+';expires='+d.toUTCString()+';path=/;SameSite=Strict';}
+function getCookie(name){const m=document.cookie.match(new RegExp('(^| )'+name+'=([^;]+)'));return m?decodeURIComponent(m[2]):'';}
+function storeSheetsUrl(url){localStorage.setItem(SHEETS_KEY,url);setCookie(SHEETS_KEY,url,365);}
+
 // ============================================================
 // DATA
 // ============================================================
-function getSheetsUrl() { return localStorage.getItem(SHEETS_KEY) || ''; }
+function getSheetsUrl(){return localStorage.getItem(SHEETS_KEY)||getCookie(SHEETS_KEY)||'';}
 const DB = {
   get: k => JSON.parse(localStorage.getItem('trw_'+k) || '[]'),
   set: (k,v) => localStorage.setItem('trw_'+k, JSON.stringify(v)),
@@ -636,6 +645,7 @@ function connectSheets() {
   const url = document.getElementById('sheetsUrl').value.trim();
   if (!url.startsWith('https://script.google.com')) { alert('Please paste a valid Google Apps Script URL.'); return; }
   localStorage.setItem(SHEETS_KEY, url);
+  storeSheetsUrl(url);
   closeModal('settingsModal');
   loadFromSheets();
 }
