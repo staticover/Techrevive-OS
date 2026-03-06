@@ -322,7 +322,7 @@ textarea { resize: vertical; min-height: 72px; }
   .invest-summary { grid-template-columns: 1fr; gap: 8px; }
   .month-grid { grid-template-columns: 1fr; }
   .calc-inputs { grid-template-columns: 1fr; }
-  .calc-results { grid-template-columns: 1fr 1fr; }
+  .calc-results { grid-template-columns: 1fr 1fr !important; }
   .timer-block { gap: 14px; }
   .timer-display { font-size: 36px; min-width: auto; }
   .miles-banner { gap: 14px; }
@@ -441,7 +441,7 @@ textarea { resize: vertical; min-height: 72px; }
     <div class="section-label">Recent Jobs</div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Customer</th><th>Device</th><th>Repair</th><th>Charged</th><th>True Profit</th><th>Mobile</th><th>Photos</th><th>Status</th><th>Date</th></tr></thead>
+        <thead><tr><th>Customer</th><th>Device</th><th>Repair</th><th>Charged</th><th>Profit</th><th>After Gas</th><th>Tax Ded.</th><th>Photos</th><th>Status</th><th>Date</th></tr></thead>
         <tbody id="dashboard-recent"></tbody>
       </table>
     </div>
@@ -484,7 +484,7 @@ textarea { resize: vertical; min-height: 72px; }
     </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Customer</th><th>Phone</th><th>Device</th><th>Repair</th><th>Charged</th><th>True Profit</th><th>Mobile</th><th>Miles</th><th>Photos</th><th>Time</th><th>Payment</th><th>Date</th><th></th></tr></thead>
+        <thead><tr><th>Customer</th><th>Phone</th><th>Device</th><th>Repair</th><th>Charged</th><th>Profit</th><th>After Gas</th><th>Tax Deduction</th><th>Mobile</th><th>Photos</th><th>Time</th><th>Payment</th><th>Date</th><th></th></tr></thead>
         <tbody id="jobs-tbody"></tbody>
       </table>
     </div>
@@ -520,30 +520,40 @@ textarea { resize: vertical; min-height: 72px; }
       <div class="calc-header">
         <div class="calc-title-text">Price Calculator</div>
       </div>
+
+      <!-- PRESET BUTTONS -->
+      <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap">
+        <button onclick="setCalcPreset('standard')" id="preset-standard" class="btn btn-primary btn-sm">Standard — $60 min</button>
+        <button onclick="setCalcPreset('budget')" id="preset-budget" class="btn btn-outline btn-sm">Budget Phone — $40 min</button>
+      </div>
+
       <div class="calc-inputs">
         <div class="form-group" style="margin:0">
           <label>Parts Cost ($)</label>
           <input type="number" id="calc-parts" placeholder="0.00" min="0" step="0.01" inputmode="decimal" oninput="calcPrice()">
         </div>
         <div class="form-group" style="margin:0">
-          <label>Miles Driven (optional)</label>
-          <input type="number" id="calc-miles" placeholder="0" min="0" inputmode="numeric" oninput="calcPrice()">
+          <label>Minimum Profit ($)</label>
+          <input type="number" id="calc-minprofit" placeholder="60" min="0" step="1" inputmode="numeric" value="60" oninput="calcPrice()">
+          <div style="font-size:10px;color:var(--text3);margin-top:4px">Lower this for a specific job if needed</div>
         </div>
         <div class="form-group" style="margin:0">
-          <label>Target Margin %</label>
-          <input type="number" id="calc-margin" placeholder="50" min="1" max="99" value="50" oninput="calcPrice()">
+          <label>Miles Driven (optional)</label>
+          <input type="number" id="calc-miles" placeholder="0" min="0" inputmode="numeric" oninput="calcPrice()">
+          <div style="font-size:10px;color:var(--text3);margin-top:4px">For tax deduction tracking only</div>
         </div>
       </div>
       <div class="calc-toggle-row">
         <label style="display:flex;align-items:center;gap:8px;margin:0;cursor:pointer;text-transform:none;letter-spacing:0;font-size:12px;color:var(--text2);font-weight:400">
           <input type="checkbox" id="calc-gas" onchange="calcPrice()" style="width:auto;accent-color:var(--accent)">
-          Add $10 gas fee (mobile job)
+          Mobile job — add $10 gas fee
         </label>
       </div>
-      <div class="calc-results">
-        <div class="calc-result-box"><div class="calc-result-label">Travel Cost</div><div class="calc-result-val muted" id="calc-travel">—</div></div>
-        <div class="calc-result-box"><div class="calc-result-label">Charge This</div><div class="calc-result-val" id="calc-suggested" style="color:var(--text)">—</div></div>
+      <div class="calc-results" style="grid-template-columns:repeat(4,1fr)">
+        <div class="calc-result-box"><div class="calc-result-label">Gas Fee</div><div class="calc-result-val muted" id="calc-travel">—</div></div>
+        <div class="calc-result-box" style="border-color:var(--accent)"><div class="calc-result-label">Minimum Charge</div><div class="calc-result-val" id="calc-suggested" style="color:var(--accent)">—</div></div>
         <div class="calc-result-box"><div class="calc-result-label">Your Profit</div><div class="calc-result-val" id="calc-profit" style="color:var(--green)">—</div></div>
+        <div class="calc-result-box"><div class="calc-result-label">Tax Deduction</div><div class="calc-result-val b" id="calc-taxded">—</div></div>
       </div>
     </div>
 
@@ -809,7 +819,10 @@ const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
 const fmt$=n=>'$'+parseFloat(n||0).toFixed(2);
 const fmtDate=d=>d?new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
 const fmtDur=s=>{if(!s||s<=0)return'—';const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;return h>0?`${h}h ${m}m`:`${m}m ${sec}s`;};
-function getTrueProfit(j){const base=parseFloat(j.charged||0)-parseFloat(j.parts||0);const gas=j.mobile&&j.gasfee?GAS_FEE:0;const miles=(parseFloat(j.miles||0)*getIrsRate());return base-gas-miles;}
+function getProfit(j){return parseFloat(j.charged||0)-parseFloat(j.parts||0);}
+function getAfterGas(j){return getProfit(j)-(j.mobile&&j.gasfee?GAS_FEE:0);}
+function getTaxDeduction(j){return parseFloat(j.miles||0)*getIrsRate();}
+function getTrueProfit(j){return getAfterGas(j);}
 function getInvoiceNumber(jobId){const jobs=[...getJobs()].sort((a,b)=>(a.date||'').localeCompare(b.date||''));const idx=jobs.findIndex(j=>j.id===jobId);return'TRW-'+String(Math.max(idx+1,1)).padStart(4,'0');}
 
 // TIMER
@@ -822,18 +835,26 @@ function timerResume(){timerRunning=true;timerPaused=false;timerInterval=setInte
 function timerStop(){clearInterval(timerInterval);timerRunning=false;timerPaused=false;const elapsed=timerSeconds;document.getElementById('timerStartBtn').style.display='';document.getElementById('timerPauseBtn').style.display='none';document.getElementById('timerResumeBtn').style.display='none';document.getElementById('timerStopBtn').style.display='none';document.getElementById('timerLast').textContent=elapsed>0?'Last: '+fmtDur(elapsed):'';timerSeconds=0;renderTimerDisplay();}
 
 // CALCULATOR
+function setCalcPreset(type){
+  const minprofit=type==='budget'?40:60;
+  document.getElementById('calc-minprofit').value=minprofit;
+  document.getElementById('preset-standard').className=type==='standard'?'btn btn-primary btn-sm':'btn btn-outline btn-sm';
+  document.getElementById('preset-budget').className=type==='budget'?'btn btn-primary btn-sm':'btn btn-outline btn-sm';
+  calcPrice();
+}
 function calcPrice(){
   const parts=parseFloat(document.getElementById('calc-parts').value)||0;
+  const minProfit=parseFloat(document.getElementById('calc-minprofit').value)||60;
   const miles=parseFloat(document.getElementById('calc-miles').value)||0;
-  const margin=parseFloat(document.getElementById('calc-margin').value)||50;
   const gas=document.getElementById('calc-gas').checked?GAS_FEE:0;
-  const travelCost=gas+(miles*getIrsRate());
-  document.getElementById('calc-travel').textContent=travelCost>0?fmt$(travelCost):'—';
-  if(parts<=0&&travelCost<=0){document.getElementById('calc-suggested').textContent='—';document.getElementById('calc-profit').textContent='—';return;}
-  const totalCost=parts+travelCost;
-  const price=totalCost/(1-(margin/100));
-  document.getElementById('calc-suggested').textContent=fmt$(price);
-  document.getElementById('calc-profit').textContent=fmt$(price-totalCost);
+  const taxDed=miles*getIrsRate();
+  document.getElementById('calc-travel').textContent=gas>0?fmt$(gas):'—';
+  document.getElementById('calc-taxded').textContent=taxDed>0?fmt$(taxDed):'—';
+  if(parts<=0&&minProfit<=0){document.getElementById('calc-suggested').textContent='—';document.getElementById('calc-profit').textContent='—';return;}
+  // Minimum charge = parts + gas fee + minimum profit you want
+  const minCharge=parts+gas+minProfit;
+  document.getElementById('calc-suggested').textContent=fmt$(minCharge);
+  document.getElementById('calc-profit').textContent=fmt$(minProfit);
 }
 
 // NAV
@@ -919,7 +940,7 @@ function renderDashboard(){
   document.getElementById('stat-mobilejobs').textContent=mobileJobs;
   const recent=[...jobs].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,10);
   if(!recent.length){document.getElementById('dashboard-recent').innerHTML=`<tr><td colspan="9" style="text-align:center;padding:36px;color:var(--text3)">No jobs yet — head to Jobs to log your first repair.</td></tr>`;document.getElementById('dashboard-recent-cards').innerHTML='<div class="empty-state"><div class="empty-title">No jobs yet</div><div class="empty-sub">Head to Jobs to log your first repair</div></div>';}
-  else{document.getElementById('dashboard-recent').innerHTML=recent.map(j=>{const p=getTrueProfit(j);return`<tr><td><strong>${j.customer}</strong></td><td>${j.device}</td><td>${j.repair}</td><td>${fmt$(j.charged)}</td><td class="${p>=0?'pos':'neg'}">${fmt$(p)}</td><td>${j.mobile?'Mobile':'-'}</td><td><div class="photo-dots"><div class="photo-dot ${j.beforePhoto?'taken':''}"></div><div class="photo-dot ${j.afterPhoto?'taken':''}"></div></div></td><td><span class="badge badge-${j.payment}">${j.payment}</span></td><td class="muted">${fmtDate(j.date)}</td></tr>`;}).join('');document.getElementById('dashboard-recent-cards').innerHTML=recent.map(j=>jobCard(j,false)).join('');}
+  else{document.getElementById('dashboard-recent').innerHTML=recent.map(j=>{const p=getProfit(j),ag=getAfterGas(j),td=getTaxDeduction(j);return`<tr><td><strong>${j.customer}</strong></td><td>${j.device}</td><td>${j.repair}</td><td>${fmt$(j.charged)}</td><td class="${p>=0?'pos':'neg'}">${fmt$(p)}</td><td class="${ag>=0?'pos':'neg'}">${j.mobile?fmt$(ag):'—'}</td><td class="b">${td>0?fmt$(td):'—'}</td><td><div class="photo-dots"><div class="photo-dot ${j.beforePhoto?'taken':''}"></div><div class="photo-dot ${j.afterPhoto?'taken':''}"></div></div></td><td><span class="badge badge-${j.payment}">${j.payment}</span></td><td class="muted">${fmtDate(j.date)}</td></tr>`;}).join('');document.getElementById('dashboard-recent-cards').innerHTML=recent.map(j=>jobCard(j,false)).join('');}
   const monthly=getMonthlyData();
   const mgrid=document.getElementById('monthly-grid');
   if(!monthly.length){mgrid.innerHTML='<div style="color:var(--text3);font-size:12px">No monthly data yet.</div>';return;}
@@ -927,7 +948,7 @@ function renderDashboard(){
 }
 
 // JOBS
-function jobCard(j,showEdit=true){const p=getTrueProfit(j);return`<div class="job-card"><div class="job-card-top"><div><div class="job-card-name">${j.customer}</div><div class="job-card-device">${j.device}${j.phone?' · '+j.phone:''}${j.mobile?' · Mobile':''}</div></div><span class="badge badge-${j.payment}" style="cursor:${showEdit?'pointer':'default'}" onclick="${showEdit?`togglePay('${j.id}')`:''}"">${j.payment}</span></div><div class="job-card-repair">${j.repair||''}</div><div class="job-card-nums"><div><div class="job-card-num-label">Parts</div><div class="job-card-num-val muted">${fmt$(j.parts)}</div></div><div><div class="job-card-num-label">Charged</div><div class="job-card-num-val">${fmt$(j.charged)}</div></div><div><div class="job-card-num-label">True Profit</div><div class="job-card-num-val ${p>=0?'pos':'neg'}">${fmt$(p)}</div></div></div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div style="font-size:10px;color:var(--text3)">${fmtDate(j.date)}${j.duration?' · '+fmtDur(j.duration):''}</div><div class="photo-dots"><div class="photo-dot ${j.beforePhoto?'taken':''}"></div><div class="photo-dot ${j.afterPhoto?'taken':''}"></div></div></div>${showEdit?`<div class="job-card-actions"><button class="btn-ghost btn-sm" onclick="generateInvoice('${j.id}')">Invoice</button><button class="btn btn-outline btn-sm" onclick="editJob('${j.id}')">Edit</button><button class="btn btn-danger" onclick="deleteJob('${j.id}')">Del</button></div>`:''}</div>`;}
+function jobCard(j,showEdit=true){const p=getProfit(j),ag=getAfterGas(j),td=getTaxDeduction(j);return`<div class="job-card"><div class="job-card-top"><div><div class="job-card-name">${j.customer}</div><div class="job-card-device">${j.device}${j.phone?' · '+j.phone:''}${j.mobile?' · Mobile':''}</div></div><span class="badge badge-${j.payment}" style="cursor:${showEdit?'pointer':'default'}" onclick="${showEdit?`togglePay('${j.id}')`:''}"">${j.payment}</span></div><div class="job-card-repair">${j.repair||''}</div><div class="job-card-nums"><div><div class="job-card-num-label">Profit</div><div class="job-card-num-val ${p>=0?'pos':'neg'}">${fmt$(p)}</div></div><div><div class="job-card-num-label">After Gas</div><div class="job-card-num-val ${ag>=0?'pos':'neg'}">${j.mobile?fmt$(ag):'—'}</div></div><div><div class="job-card-num-label">Tax Ded.</div><div class="job-card-num-val b">${td>0?fmt$(td):'—'}</div></div></div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><div style="font-size:10px;color:var(--text3)">${fmtDate(j.date)}${j.duration?' · '+fmtDur(j.duration):''}</div><div class="photo-dots"><div class="photo-dot ${j.beforePhoto?'taken':''}"></div><div class="photo-dot ${j.afterPhoto?'taken':''}"></div></div></div>${showEdit?`<div class="job-card-actions"><button class="btn-ghost btn-sm" onclick="generateInvoice('${j.id}')">Invoice</button><button class="btn btn-outline btn-sm" onclick="editJob('${j.id}')">Edit</button><button class="btn btn-danger" onclick="deleteJob('${j.id}')">Del</button></div>`:''}</div>`;}
 
 document.getElementById('addJobBtn').addEventListener('click',()=>{
   document.getElementById('jobModalTitle').textContent='New Job';
@@ -963,7 +984,7 @@ function renderJobs(){
     return matchQ&&matchP&&matchT;
   }).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
   if(!filtered.length){document.getElementById('jobs-tbody').innerHTML=`<tr><td colspan="13" style="text-align:center;padding:36px;color:var(--text3)">${!jobs.length?'No jobs yet.':'No matching jobs.'}</td></tr>`;document.getElementById('jobs-cards').innerHTML='<div class="empty-state"><div class="empty-title">'+(jobs.length?'No matches':'No jobs yet')+'</div></div>';return;}
-  document.getElementById('jobs-tbody').innerHTML=filtered.map(j=>{const p=getTrueProfit(j);return`<tr><td><strong>${j.customer}</strong></td><td class="muted">${j.phone||'-'}</td><td>${j.device}</td><td>${j.repair}</td><td>${fmt$(j.charged)}</td><td class="${p>=0?'pos':'neg'}">${fmt$(p)}</td><td>${j.mobile?'<span class="badge badge-wanted">Mobile</span>':'-'}</td><td class="muted">${j.miles||'-'}</td><td><div class="photo-dots"><div class="photo-dot ${j.beforePhoto?'taken':''}"></div><div class="photo-dot ${j.afterPhoto?'taken':''}"></div></div></td><td class="muted">${fmtDur(j.duration)}</td><td><button class="toggle-pay badge badge-${j.payment}" onclick="togglePay('${j.id}')">${j.payment}</button></td><td class="muted">${fmtDate(j.date)}</td><td><div class="action-btns"><button class="btn-ghost" onclick="generateInvoice('${j.id}')">Invoice</button><button class="btn btn-outline btn-sm" onclick="editJob('${j.id}')">Edit</button><button class="btn btn-danger" onclick="deleteJob('${j.id}')">Del</button></div></td></tr>`;}).join('');
+  document.getElementById('jobs-tbody').innerHTML=filtered.map(j=>{const p=getProfit(j),ag=getAfterGas(j),td=getTaxDeduction(j);return`<tr><td><strong>${j.customer}</strong></td><td class="muted">${j.phone||'-'}</td><td>${j.device}</td><td>${j.repair}</td><td>${fmt$(j.charged)}</td><td class="${p>=0?'pos':'neg'}">${fmt$(p)}</td><td class="${ag>=0?'pos':'neg'}">${j.mobile?fmt$(ag):'—'}</td><td class="b">${td>0?fmt$(td):'—'}</td><td>${j.mobile?'<span class="badge badge-wanted">Mobile</span>':'-'}</td><td><div class="photo-dots"><div class="photo-dot ${j.beforePhoto?'taken':''}"></div><div class="photo-dot ${j.afterPhoto?'taken':''}"></div></div></td><td class="muted">${fmtDur(j.duration)}</td><td><button class="toggle-pay badge badge-${j.payment}" onclick="togglePay('${j.id}')">${j.payment}</button></td><td class="muted">${fmtDate(j.date)}</td><td><div class="action-btns"><button class="btn-ghost" onclick="generateInvoice('${j.id}')">Invoice</button><button class="btn btn-outline btn-sm" onclick="editJob('${j.id}')">Edit</button><button class="btn btn-danger" onclick="deleteJob('${j.id}')">Del</button></div></td></tr>`;}).join('');
   document.getElementById('jobs-cards').innerHTML=filtered.map(j=>jobCard(j,true)).join('');
 }
 
