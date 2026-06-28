@@ -159,13 +159,6 @@ nav { flex: 1; padding: 14px 12px; overflow-y: auto; display: flex; flex-directi
 .month-row-val { font-weight: 700; }
 
 /* MILEAGE BANNER */
-.miles-banner { padding: 16px 22px; margin-bottom: 24px; display: flex; align-items: center; gap: 26px; flex-wrap: wrap; }
-.miles-stat { display: flex; flex-direction: column; gap: 2px; }
-.miles-stat-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text3); }
-.miles-stat-val { font-family: 'Instrument Serif', serif; font-size: 22px; color: var(--text); }
-.miles-stat-val.b { color: var(--blue); }
-.miles-divider { width: 1px; height: 34px; background: var(--hairline); }
-
 /* CALCULATOR (Pricing tab) */
 .calc-block { padding: 22px 24px; margin-bottom: 26px; }
 .calc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
@@ -336,8 +329,6 @@ textarea { resize: vertical; min-height: 72px; }
   .month-grid { grid-template-columns: 1fr; }
   .calc-inputs { grid-template-columns: 1fr; }
   .calc-results { grid-template-columns: 1fr 1fr !important; }
-  .miles-banner { gap: 14px; }
-  .miles-divider { display: none; }
 }
 @media (max-width: 400px) {
   .stats-grid { grid-template-columns: 1fr 1fr; }
@@ -441,22 +432,10 @@ textarea { resize: vertical; min-height: 72px; }
       <div class="stat-card glass"><div class="stat-label">Open Tickets</div><div class="stat-val gold" id="stat-opentickets">0</div></div>
       <div class="stat-card glass"><div class="stat-label">Investments Needed</div><div class="stat-val gold" id="stat-investneeded">$0.00</div></div>
     </div>
-
-    <!-- MILEAGE / TAX TRACKER -->
-    <div class="miles-banner glass">
-      <div class="miles-stat"><div class="miles-stat-label">Miles Driven (Year)</div><div class="miles-stat-val b" id="stat-miles">0</div></div>
-      <div class="miles-divider"></div>
-      <div class="miles-stat"><div class="miles-stat-label">IRS Deduction (2026)</div><div class="miles-stat-val g" id="stat-deduction">$0.00</div></div>
-      <div class="miles-divider"></div>
-      <div class="miles-stat"><div class="miles-stat-label">Gas Fees Collected</div><div class="miles-stat-val" id="stat-gasfees">$0.00</div></div>
-      <div class="miles-divider"></div>
-      <div class="miles-stat"><div class="miles-stat-label">Mobile Jobs</div><div class="miles-stat-val" id="stat-mobilejobs">0</div></div>
-    </div>
-
     <div class="section-label">Recent Jobs</div>
     <div class="table-wrap glass">
       <table>
-        <thead><tr><th>Customer</th><th>Device</th><th>Repair</th><th>Charged</th><th>Profit</th><th>After Gas</th><th>Tax Ded.</th><th>Status</th><th>Date</th></tr></thead>
+        <thead><tr><th>Customer</th><th>Device</th><th>Repair</th><th>Charged</th><th>Profit</th><th>After Gas</th><th>Status</th><th>Date</th></tr></thead>
         <tbody id="dashboard-recent"></tbody>
       </table>
     </div>
@@ -484,7 +463,7 @@ textarea { resize: vertical; min-height: 72px; }
     </div>
     <div class="table-wrap glass">
       <table>
-        <thead><tr><th>Customer</th><th>Phone</th><th>Device</th><th>Repair</th><th>Charged</th><th>Profit</th><th>After Gas</th><th>Tax Deduction</th><th>Mobile</th><th>Payment</th><th>Date</th><th></th></tr></thead>
+        <thead><tr><th>Customer</th><th>Phone</th><th>Device</th><th>Repair</th><th>Charged</th><th>Profit</th><th>After Gas</th><th>Mobile</th><th>Payment</th><th>Date</th><th></th></tr></thead>
         <tbody id="jobs-tbody"></tbody>
       </table>
     </div>
@@ -558,11 +537,6 @@ textarea { resize: vertical; min-height: 72px; }
           <input type="number" id="calc-minprofit" placeholder="60" min="0" step="1" inputmode="numeric" value="60" oninput="calcPrice()">
           <div style="font-size:10px;color:var(--text3);margin-top:4px">Lower this for a specific job if needed</div>
         </div>
-        <div class="form-group" style="margin:0">
-          <label>Miles Driven (optional)</label>
-          <input type="number" id="calc-miles" placeholder="0" min="0" inputmode="numeric" oninput="calcPrice()">
-          <div style="font-size:10px;color:var(--text3);margin-top:4px">For tax deduction tracking only</div>
-        </div>
       </div>
       <div class="calc-toggle-row">
         <label style="display:flex;align-items:center;gap:8px;margin:0;cursor:pointer;text-transform:none;letter-spacing:0;font-size:12px;color:var(--text2);font-weight:500">
@@ -570,12 +544,11 @@ textarea { resize: vertical; min-height: 72px; }
           Mobile job — add $10 gas fee
         </label>
       </div>
-      <div class="calc-results" style="grid-template-columns:repeat(4,1fr)">
+      <div class="calc-results" style="grid-template-columns:repeat(3,1fr)">
         <div class="calc-result-box"><div class="calc-result-label">Gas Fee</div><div class="calc-result-val muted" id="calc-travel">—</div></div>
         <div class="calc-result-box" style="border-color:var(--accent)"><div class="calc-result-label">Minimum Charge</div><div class="calc-result-val" id="calc-suggested" style="color:var(--accent)">—</div></div>
         <div class="calc-result-box"><div class="calc-result-label">Your Profit</div><div class="calc-result-val" id="calc-profit" style="color:var(--green)">—</div></div>
-        <div class="calc-result-box"><div class="calc-result-label">Tax Deduction</div><div class="calc-result-val b" id="calc-taxded">—</div></div>
-      </div>
+        </div>
     </div>
 
     <div class="section-label">Your Services</div>
@@ -642,21 +615,11 @@ textarea { resize: vertical; min-height: 72px; }
       </div>
 
       <div id="mobileFields" style="display:none">
-        <div class="form-row">
-          <div class="form-group">
-            <label>Miles Driven (round trip)</label>
-            <input type="number" id="j-miles" placeholder="0" min="0" inputmode="numeric">
-            <div style="font-size:10px;color:var(--text3);margin-top:4px">Tracked for tax deduction — not shown on invoice</div>
-          </div>
-          <div class="form-group">
-            <label>Gas Fee</label>
-            <label class="checkbox-row" style="margin-top:2px;cursor:pointer">
+        <div class="form-group"><label class="checkbox-row" style="margin-top:2px;cursor:pointer">
               <input type="checkbox" id="j-gasfee" style="width:auto;accent-color:var(--accent)" checked>
               <span class="checkbox-label">Add $10 gas fee</span>
               <span class="checkbox-sub">Tracked internally</span>
-            </label>
-          </div>
-        </div>
+            </label></div>
       </div>
 
       <div class="form-group"><label>Notes</label><textarea id="j-notes" placeholder="Anything relevant about this repair..."></textarea></div>
@@ -745,14 +708,6 @@ textarea { resize: vertical; min-height: 72px; }
     <div class="modal-header"><div class="modal-title">Settings</div><button class="modal-close" onclick="closeModal('settingsModal')">Close</button></div>
     <div class="modal-body">
       <div class="settings-section">
-        <div class="settings-section-title">Mileage Rate</div>
-        <div class="settings-row">
-          <div><div class="settings-row-label">IRS Rate per Mile</div><div class="settings-row-sub">2026 rate is $0.70 — update here if it changes</div></div>
-          <div style="display:flex;align-items:center;gap:8px"><span style="font-size:12px;color:var(--text3)">$</span><input type="number" id="irsRate" value="0.70" min="0" step="0.01" style="width:70px;padding:8px 10px;font-size:13px"></div>
-        </div>
-        <button class="btn btn-outline btn-sm" onclick="saveIrsRate()">Save Rate</button>
-      </div>
-      <div class="settings-section">
         <div class="settings-section-title">Google Sheets Sync</div>
         <p style="font-size:12px;color:var(--text2);margin-bottom:18px;line-height:1.7">Syncs all data to organized spreadsheet tabs — Jobs, Tickets, Inventory, Pricing, Investments, and Monthly Summary with mileage tracking.</p>
         <div class="setup-step"><div class="setup-step-num">1</div><div><div class="setup-step-title">Create a Google Sheet</div><div class="setup-step-desc">Go to <a href="https://sheets.google.com" target="_blank">sheets.google.com</a> and create a new blank spreadsheet named "Tech Revive Wireless".</div></div></div>
@@ -768,11 +723,9 @@ textarea { resize: vertical; min-height: 72px; }
 </div>
 
 <script>
-const {jsPDF} = window.jspdf;
 const PASSWORD = 'Jesusisgreat2!';
 const BUSINESS = { name:'Tech Revive Wireless', phone:'(919) 295-0791' };
 const SHEETS_KEY = 'trw_sheets_url';
-const IRS_RATE_KEY = 'trw_irs_rate';
 const GAS_FEE = 10;
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -780,8 +733,6 @@ function setCookie(n,v,d){const x=new Date();x.setTime(x.getTime()+d*864e5);docu
 function getCookie(n){const m=document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)'));return m?decodeURIComponent(m[2]):'';}
 function storeSheetsUrl(u){localStorage.setItem(SHEETS_KEY,u);setCookie(SHEETS_KEY,u,365);}
 function getSheetsUrl(){return localStorage.getItem(SHEETS_KEY)||getCookie(SHEETS_KEY)||'';}
-function getIrsRate(){return parseFloat(localStorage.getItem(IRS_RATE_KEY)||'0.70');}
-function saveIrsRate(){const v=parseFloat(document.getElementById('irsRate').value)||0.70;localStorage.setItem(IRS_RATE_KEY,v.toString());alert('IRS rate saved.');renderDashboard();}
 
 const DB={get:k=>JSON.parse(localStorage.getItem('trw_'+k)||'[]'),set:(k,v)=>localStorage.setItem('trw_'+k,JSON.stringify(v))};
 const getJobs=()=>DB.get('jobs');
@@ -806,14 +757,13 @@ function setSyncStatus(s){
 function connectSheets(){const url=document.getElementById('sheetsUrl').value.trim();if(!url.startsWith('https://script.google.com')){alert('Please paste a valid Google Apps Script URL.');return;}localStorage.setItem(SHEETS_KEY,url);storeSheetsUrl(url);closeModal('settingsModal');loadFromSheets();}
 
 function requirePassword(){document.getElementById('pwInput').value='';document.getElementById('pwError').textContent='';document.getElementById('pwOverlay').classList.add('open');setTimeout(()=>document.getElementById('pwInput').focus(),100);}
-function checkPassword(){if(document.getElementById('pwInput').value===PASSWORD){document.getElementById('pwOverlay').classList.remove('open');const eu=getSheetsUrl();if(eu)document.getElementById('sheetsUrl').value=eu;const rate=getIrsRate();document.getElementById('irsRate').value=rate;openModal('settingsModal');}else{document.getElementById('pwError').textContent='Incorrect password.';document.getElementById('pwInput').value='';document.getElementById('pwInput').focus();}}
+function checkPassword(){if(document.getElementById('pwInput').value===PASSWORD){document.getElementById('pwOverlay').classList.remove('open');const eu=getSheetsUrl();if(eu)document.getElementById('sheetsUrl').value=eu;openModal('settingsModal');}else{document.getElementById('pwError').textContent='Incorrect password.';document.getElementById('pwInput').value='';document.getElementById('pwInput').focus();}}
 
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
 const fmt$=n=>'$'+parseFloat(n||0).toFixed(2);
 const fmtDate=d=>d?new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'';
 function getProfit(j){return parseFloat(j.charged||0)-parseFloat(j.parts||0);}
 function getAfterGas(j){return getProfit(j)-(j.mobile&&j.gasfee?GAS_FEE:0);}
-function getTaxDeduction(j){return parseFloat(j.miles||0)*getIrsRate();}
 function getTrueProfit(j){return getAfterGas(j);}
 function getInvoiceNumber(jobId){const jobs=[...getJobs()].sort((a,b)=>(a.date||'').localeCompare(b.date||''));const idx=jobs.findIndex(j=>j.id===jobId);return'TRW-'+String(Math.max(idx+1,1)).padStart(4,'0');}
 function getTicketNumber(ticketId){const tickets=[...getTickets()].sort((a,b)=>(a.date||'').localeCompare(b.date||''));const idx=tickets.findIndex(t=>t.id===ticketId);return'TKT-'+String(Math.max(idx+1,1)).padStart(4,'0');}
@@ -829,11 +779,8 @@ function setCalcPreset(type){
 function calcPrice(){
   const parts=parseFloat(document.getElementById('calc-parts').value)||0;
   const minProfit=parseFloat(document.getElementById('calc-minprofit').value)||60;
-  const miles=parseFloat(document.getElementById('calc-miles').value)||0;
   const gas=document.getElementById('calc-gas').checked?GAS_FEE:0;
-  const taxDed=miles*getIrsRate();
   document.getElementById('calc-travel').textContent=gas>0?fmt$(gas):'—';
-  document.getElementById('calc-taxded').textContent=taxDed>0?fmt$(taxDed):'—';
   if(parts<=0&&minProfit<=0){document.getElementById('calc-suggested').textContent='—';document.getElementById('calc-profit').textContent='—';return;}
   const minCharge=parts+gas+minProfit;
   document.getElementById('calc-suggested').textContent=fmt$(minCharge);
@@ -877,10 +824,10 @@ function makeDraggable(el,handle){let sx=0,sy=0,ox=0,oy=0;handle.addEventListene
 function toggleMobileFields(){document.getElementById('mobileFields').style.display=document.getElementById('j-mobile').checked?'':'none';}
 
 // INVOICE
-function generateInvoice(jobId){const job=getJobs().find(j=>j.id===jobId);if(!job)return;const doc=new jsPDF({unit:'pt',format:'letter'});const W=612,invoiceNum=getInvoiceNumber(jobId);const charged=parseFloat(job.charged||0),parts=parseFloat(job.parts||0);const NAVY=[60,40,110],RED=[225,29,72],GRAY=[110,102,128],LIGHT=[243,238,253],BLACK=[33,28,51],WHITE=[255,255,255];doc.setFillColor(...NAVY);doc.rect(0,0,W,90,'F');doc.setTextColor(...WHITE);doc.setFont('helvetica','bold');doc.setFontSize(24);doc.text('TECH REVIVE',48,38);doc.text('WIRELESS',48,60);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(210,200,235);doc.text('PROFESSIONAL MOBILE DEVICE REPAIR',48,74);doc.setFillColor(...RED);doc.rect(48,79,72,2,'F');doc.setTextColor(...WHITE);doc.setFont('helvetica','bold');doc.setFontSize(30);doc.text('INVOICE',W-48,44,{align:'right'});doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(210,200,235);doc.text(invoiceNum,W-48,62,{align:'right'});let y=122;doc.setFillColor(...LIGHT);doc.rect(48,y-14,230,84,'F');doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...GRAY);doc.text('BILL TO',62,y);doc.setFont('helvetica','bold');doc.setFontSize(14);doc.setTextColor(...NAVY);doc.text(job.customer||'Customer',62,y+18);doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(...BLACK);if(job.phone)doc.text(job.phone,62,y+34);const rx=W-200;doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...GRAY);doc.text('DATE ISSUED',rx,y);doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(...BLACK);doc.text(fmtDate(job.date)||'-',rx,y+16);doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...GRAY);doc.text('INVOICE NO.',rx,y+34);doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(...BLACK);doc.text(invoiceNum,rx,y+50);y=232;doc.setFillColor(...NAVY);doc.rect(48,y,W-96,28,'F');doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...WHITE);doc.text('DESCRIPTION',62,y+18);doc.text('DEVICE',290,y+18);doc.text('AMOUNT',W-62,y+18,{align:'right'});y+=28;doc.setFillColor(...WHITE);doc.rect(48,y,W-96,38,'F');doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(...BLACK);doc.text(job.repair||'Repair Service',62,y+24);doc.text(job.device||'-',290,y+24);doc.setFont('helvetica','bold');doc.text(fmt$(charged),W-62,y+24,{align:'right'});if(parts>0){y+=38;doc.setFillColor(...LIGHT);doc.rect(48,y,W-96,38,'F');doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(...BLACK);doc.text('Parts and Components',62,y+24);doc.text(job.device||'-',290,y+24);doc.setFont('helvetica','italic');doc.setFontSize(10);doc.setTextColor(...GRAY);doc.text('included in total',W-62,y+24,{align:'right'});y+=38;}else{y+=38;}if(job.notes){doc.setFillColor(250,248,253);doc.rect(48,y,W-96,34,'F');doc.setFont('helvetica','italic');doc.setFontSize(9);doc.setTextColor(...GRAY);doc.text('Note: '+job.notes,62,y+21);y+=34;}doc.setDrawColor(...NAVY);doc.setLineWidth(.5);doc.rect(48,232,W-96,y-232);y+=24;const tx=W-230;doc.setDrawColor(...LIGHT);doc.setLineWidth(1);doc.line(tx,y,W-48,y);y+=18;doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(...GRAY);doc.text('Subtotal',tx,y);doc.setTextColor(...BLACK);doc.text(fmt$(charged),W-48,y,{align:'right'});y+=22;doc.setFillColor(...NAVY);doc.rect(tx-10,y-14,W-tx-38,32,'F');doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(...WHITE);doc.text('TOTAL DUE',tx,y+6);doc.text(fmt$(charged),W-48,y+6,{align:'right'});y+=42;const isPaid=job.payment==='paid';doc.setFillColor(...(isPaid?[5,150,105]:[225,29,72]));doc.roundedRect(tx-10,y,130,28,3,3,'F');doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(...WHITE);doc.text(isPaid?'PAID IN FULL':'BALANCE DUE',tx+55,y+18,{align:'center'});const fy=722;doc.setDrawColor(...LIGHT);doc.setLineWidth(1);doc.line(48,fy,W-48,fy);doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(...GRAY);doc.text(BUSINESS.name,48,fy+18);doc.text(BUSINESS.phone,48,fy+32);doc.text('Thank you for your business.',W-48,fy+18,{align:'right'});doc.setFillColor(...RED);doc.rect(0,768,W,4,'F');doc.save(invoiceNum+'_'+(job.customer||'invoice').replace(/\s+/g,'_')+'.pdf');}
+function generateInvoice(jobId){if(!window.jspdf){alert('The PDF library failed to load (likely blocked by your connection or an ad-blocker). Refresh the page and try again.');return;}const{jsPDF}=window.jspdf;const job=getJobs().find(j=>j.id===jobId);if(!job)return;const doc=new jsPDF({unit:'pt',format:'letter'});const W=612,invoiceNum=getInvoiceNumber(jobId);const charged=parseFloat(job.charged||0),parts=parseFloat(job.parts||0);const NAVY=[60,40,110],RED=[225,29,72],GRAY=[110,102,128],LIGHT=[243,238,253],BLACK=[33,28,51],WHITE=[255,255,255];doc.setFillColor(...NAVY);doc.rect(0,0,W,90,'F');doc.setTextColor(...WHITE);doc.setFont('helvetica','bold');doc.setFontSize(24);doc.text('TECH REVIVE',48,38);doc.text('WIRELESS',48,60);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(210,200,235);doc.text('PROFESSIONAL MOBILE DEVICE REPAIR',48,74);doc.setFillColor(...RED);doc.rect(48,79,72,2,'F');doc.setTextColor(...WHITE);doc.setFont('helvetica','bold');doc.setFontSize(30);doc.text('INVOICE',W-48,44,{align:'right'});doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(210,200,235);doc.text(invoiceNum,W-48,62,{align:'right'});let y=122;doc.setFillColor(...LIGHT);doc.rect(48,y-14,230,84,'F');doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...GRAY);doc.text('BILL TO',62,y);doc.setFont('helvetica','bold');doc.setFontSize(14);doc.setTextColor(...NAVY);doc.text(job.customer||'Customer',62,y+18);doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(...BLACK);if(job.phone)doc.text(job.phone,62,y+34);const rx=W-200;doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...GRAY);doc.text('DATE ISSUED',rx,y);doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(...BLACK);doc.text(fmtDate(job.date)||'-',rx,y+16);doc.setFont('helvetica','bold');doc.setFontSize(8);doc.setTextColor(...GRAY);doc.text('INVOICE NO.',rx,y+34);doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(...BLACK);doc.text(invoiceNum,rx,y+50);y=232;doc.setFillColor(...NAVY);doc.rect(48,y,W-96,28,'F');doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...WHITE);doc.text('DESCRIPTION',62,y+18);doc.text('DEVICE',290,y+18);doc.text('AMOUNT',W-62,y+18,{align:'right'});y+=28;doc.setFillColor(...WHITE);doc.rect(48,y,W-96,38,'F');doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(...BLACK);doc.text(job.repair||'Repair Service',62,y+24);doc.text(job.device||'-',290,y+24);doc.setFont('helvetica','bold');doc.text(fmt$(charged),W-62,y+24,{align:'right'});if(parts>0){y+=38;doc.setFillColor(...LIGHT);doc.rect(48,y,W-96,38,'F');doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(...BLACK);doc.text('Parts and Components',62,y+24);doc.text(job.device||'-',290,y+24);doc.setFont('helvetica','italic');doc.setFontSize(10);doc.setTextColor(...GRAY);doc.text('included in total',W-62,y+24,{align:'right'});y+=38;}else{y+=38;}if(job.notes){doc.setFillColor(250,248,253);doc.rect(48,y,W-96,34,'F');doc.setFont('helvetica','italic');doc.setFontSize(9);doc.setTextColor(...GRAY);doc.text('Note: '+job.notes,62,y+21);y+=34;}doc.setDrawColor(...NAVY);doc.setLineWidth(.5);doc.rect(48,232,W-96,y-232);y+=24;const tx=W-230;doc.setDrawColor(...LIGHT);doc.setLineWidth(1);doc.line(tx,y,W-48,y);y+=18;doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(...GRAY);doc.text('Subtotal',tx,y);doc.setTextColor(...BLACK);doc.text(fmt$(charged),W-48,y,{align:'right'});y+=22;doc.setFillColor(...NAVY);doc.rect(tx-10,y-14,W-tx-38,32,'F');doc.setFont('helvetica','bold');doc.setFontSize(13);doc.setTextColor(...WHITE);doc.text('TOTAL DUE',tx,y+6);doc.text(fmt$(charged),W-48,y+6,{align:'right'});y+=42;const isPaid=job.payment==='paid';doc.setFillColor(...(isPaid?[5,150,105]:[225,29,72]));doc.roundedRect(tx-10,y,130,28,3,3,'F');doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(...WHITE);doc.text(isPaid?'PAID IN FULL':'BALANCE DUE',tx+55,y+18,{align:'center'});const fy=722;doc.setDrawColor(...LIGHT);doc.setLineWidth(1);doc.line(48,fy,W-48,fy);doc.setFont('helvetica','normal');doc.setFontSize(9);doc.setTextColor(...GRAY);doc.text(BUSINESS.name,48,fy+18);doc.text(BUSINESS.phone,48,fy+32);doc.text('Thank you for your business.',W-48,fy+18,{align:'right'});doc.setFillColor(...RED);doc.rect(0,768,W,4,'F');doc.save(invoiceNum+'_'+(job.customer||'invoice').replace(/\s+/g,'_')+'.pdf');}
 
 // DASHBOARD
-function getMonthlyData(){const byMonth={};getJobs().forEach(j=>{if(!j.date)return;const d=new Date(j.date+'T00:00:00');if(isNaN(d))return;const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');if(!byMonth[key])byMonth[key]={label:MONTH_NAMES[d.getMonth()]+' '+d.getFullYear(),revenue:0,parts:0,profit:0,unpaid:0,jobs:0,miles:0};const c=parseFloat(j.charged||0),p=parseFloat(j.parts||0);byMonth[key].jobs++;byMonth[key].miles+=parseFloat(j.miles||0);if(j.payment==='paid'){byMonth[key].revenue+=c;byMonth[key].parts+=p;byMonth[key].profit+=getTrueProfit(j);}else byMonth[key].unpaid+=c;});return Object.entries(byMonth).sort((a,b)=>b[0].localeCompare(a[0])).map(([,v])=>v);}
+function getMonthlyData(){const byMonth={};getJobs().forEach(j=>{if(!j.date)return;const d=new Date(j.date+'T00:00:00');if(isNaN(d))return;const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');if(!byMonth[key])byMonth[key]={label:MONTH_NAMES[d.getMonth()]+' '+d.getFullYear(),revenue:0,parts:0,profit:0,unpaid:0,jobs:0};const c=parseFloat(j.charged||0),p=parseFloat(j.parts||0);byMonth[key].jobs++;if(j.payment==='paid'){byMonth[key].revenue+=c;byMonth[key].parts+=p;byMonth[key].profit+=getTrueProfit(j);}else byMonth[key].unpaid+=c;});return Object.entries(byMonth).sort((a,b)=>b[0].localeCompare(a[0])).map(([,v])=>v);}
 
 function renderDashboard(){
   const jobs=getJobs(),now=new Date();
@@ -895,31 +842,22 @@ function renderDashboard(){
   document.getElementById('stat-monthprofit').textContent=fmt$(paidTM.reduce((s,j)=>s+getTrueProfit(j),0));
   document.getElementById('stat-opentickets').textContent=getTickets().filter(t=>t.status!=='completed').length;
   document.getElementById('stat-investneeded').textContent=fmt$(getInvestments().filter(i=>i.status==='wanted').reduce((s,i)=>s+parseFloat(i.cost||0),0));
-  const curYear=now.getFullYear();
-  const yearJobs=jobs.filter(j=>j.date&&new Date(j.date+'T00:00:00').getFullYear()===curYear);
-  const totalMiles=yearJobs.reduce((s,j)=>s+parseFloat(j.miles||0),0);
-  const gasFees=yearJobs.filter(j=>j.mobile&&j.gasfee).length*GAS_FEE;
-  const mobileJobs=yearJobs.filter(j=>j.mobile).length;
-  document.getElementById('stat-miles').textContent=totalMiles.toFixed(1);
-  document.getElementById('stat-deduction').textContent=fmt$(totalMiles*getIrsRate());
-  document.getElementById('stat-gasfees').textContent=fmt$(gasFees);
-  document.getElementById('stat-mobilejobs').textContent=mobileJobs;
   const recent=[...jobs].sort((a,b)=>(b.date||'').localeCompare(a.date||'')).slice(0,10);
-  if(!recent.length){document.getElementById('dashboard-recent').innerHTML=`<tr><td colspan="9" style="text-align:center;padding:36px;color:var(--text3)">No jobs yet — head to Jobs to log your first repair.</td></tr>`;document.getElementById('dashboard-recent-cards').innerHTML='<div class="empty-state"><div class="empty-title">No jobs yet</div><div class="empty-sub">Head to Jobs to log your first repair</div></div>';}
-  else{document.getElementById('dashboard-recent').innerHTML=recent.map(j=>{const p=getProfit(j),ag=getAfterGas(j),td=getTaxDeduction(j);return`<tr><td><strong>${j.customer}</strong></td><td>${j.device}</td><td>${j.repair}</td><td>${fmt$(j.charged)}</td><td class="${p>=0?'pos':'neg'}">${fmt$(p)}</td><td class="${ag>=0?'pos':'neg'}">${j.mobile?fmt$(ag):'—'}</td><td class="b">${td>0?fmt$(td):'—'}</td><td><span class="badge badge-${j.payment}">${j.payment}</span></td><td class="muted">${fmtDate(j.date)}</td></tr>`;}).join('');document.getElementById('dashboard-recent-cards').innerHTML=recent.map(j=>jobCard(j,false)).join('');}
+  if(!recent.length){document.getElementById('dashboard-recent').innerHTML=`<tr><td colspan="8" style="text-align:center;padding:36px;color:var(--text3)">No jobs yet — head to Jobs to log your first repair.</td></tr>`;document.getElementById('dashboard-recent-cards').innerHTML='<div class="empty-state"><div class="empty-title">No jobs yet</div><div class="empty-sub">Head to Jobs to log your first repair</div></div>';}
+  else{document.getElementById('dashboard-recent').innerHTML=recent.map(j=>{const p=getProfit(j),ag=getAfterGas(j);return`<tr><td><strong>${j.customer}</strong></td><td>${j.device}</td><td>${j.repair}</td><td>${fmt$(j.charged)}</td><td class="${p>=0?'pos':'neg'}">${fmt$(p)}</td><td class="${ag>=0?'pos':'neg'}">${j.mobile?fmt$(ag):'—'}</td><td><span class="badge badge-${j.payment}">${j.payment}</span></td><td class="muted">${fmtDate(j.date)}</td></tr>`;}).join('');document.getElementById('dashboard-recent-cards').innerHTML=recent.map(j=>jobCard(j,false)).join('');}
   const monthly=getMonthlyData();
   const mgrid=document.getElementById('monthly-grid');
   if(!monthly.length){mgrid.innerHTML='<div style="color:var(--text3);font-size:12px">No monthly data yet.</div>';return;}
-  mgrid.innerHTML=monthly.map(m=>`<div class="month-card glass"><div class="month-card-title">${m.label}</div><div class="month-row"><span class="month-row-label">Jobs</span><span class="month-row-val">${m.jobs}</span></div><div class="month-row"><span class="month-row-label">Revenue</span><span class="month-row-val">${fmt$(m.revenue)}</span></div><div class="month-row"><span class="month-row-label">Parts Spent</span><span class="month-row-val" style="color:var(--red)">${fmt$(m.parts)}</span></div><div class="month-row"><span class="month-row-label">Miles</span><span class="month-row-val" style="color:var(--blue)">${m.miles.toFixed(1)}</span></div><div class="month-row"><span class="month-row-label">Unpaid</span><span class="month-row-val" style="color:var(--amber)">${fmt$(m.unpaid)}</span></div><div class="month-row" style="background:rgba(124,58,237,.06);margin:0 -20px;padding:9px 20px;margin-top:8px;border-radius:0 0 14px 14px"><span class="month-row-label" style="font-weight:700">True Profit</span><span class="month-row-val ${m.profit>=0?'pos':'neg'}">${fmt$(m.profit)}</span></div></div>`).join('');
+  mgrid.innerHTML=monthly.map(m=>`<div class="month-card glass"><div class="month-card-title">${m.label}</div><div class="month-row"><span class="month-row-label">Jobs</span><span class="month-row-val">${m.jobs}</span></div><div class="month-row"><span class="month-row-label">Revenue</span><span class="month-row-val">${fmt$(m.revenue)}</span></div><div class="month-row"><span class="month-row-label">Parts Spent</span><span class="month-row-val" style="color:var(--red)">${fmt$(m.parts)}</span></div><div class="month-row"><span class="month-row-label">Unpaid</span><span class="month-row-val" style="color:var(--amber)">${fmt$(m.unpaid)}</span></div><div class="month-row" style="background:rgba(124,58,237,.06);margin:0 -20px;padding:9px 20px;margin-top:8px;border-radius:0 0 14px 14px"><span class="month-row-label" style="font-weight:700">True Profit</span><span class="month-row-val ${m.profit>=0?'pos':'neg'}">${fmt$(m.profit)}</span></div></div>`).join('');
 }
 
 // JOBS
-function jobCard(j,showEdit=true){const p=getProfit(j),ag=getAfterGas(j),td=getTaxDeduction(j);return`<div class="job-card glass"><div class="job-card-top"><div><div class="job-card-name">${j.customer}</div><div class="job-card-device">${j.device}${j.phone?' · '+j.phone:''}${j.mobile?' · Mobile':''}</div></div><span class="badge badge-${j.payment}" style="cursor:${showEdit?'pointer':'default'}" onclick="${showEdit?`togglePay('${j.id}')`:''}">${j.payment}</span></div><div class="job-card-repair">${j.repair||''}</div><div class="job-card-nums"><div><div class="job-card-num-label">Profit</div><div class="job-card-num-val ${p>=0?'pos':'neg'}">${fmt$(p)}</div></div><div><div class="job-card-num-label">After Gas</div><div class="job-card-num-val ${ag>=0?'pos':'neg'}">${j.mobile?fmt$(ag):'—'}</div></div><div><div class="job-card-num-label">Tax Ded.</div><div class="job-card-num-val b">${td>0?fmt$(td):'—'}</div></div></div><div style="font-size:10px;color:var(--text3);margin-bottom:6px">${fmtDate(j.date)}</div>${showEdit?`<div class="job-card-actions"><button class="btn-ghost" onclick="generateInvoice('${j.id}')">Invoice</button><button class="btn btn-outline btn-sm" onclick="editJob('${j.id}')">Edit</button><button class="btn btn-danger" onclick="deleteJob('${j.id}')">Del</button></div>`:''}</div>`;}
+function jobCard(j,showEdit=true){const p=getProfit(j),ag=getAfterGas(j);return`<div class="job-card glass"><div class="job-card-top"><div><div class="job-card-name">${j.customer}</div><div class="job-card-device">${j.device}${j.phone?' · '+j.phone:''}${j.mobile?' · Mobile':''}</div></div><span class="badge badge-${j.payment}" style="cursor:${showEdit?'pointer':'default'}" onclick="${showEdit?`togglePay('${j.id}')`:''}">${j.payment}</span></div><div class="job-card-repair">${j.repair||''}</div><div class="job-card-nums"><div><div class="job-card-num-label">Profit</div><div class="job-card-num-val ${p>=0?'pos':'neg'}">${fmt$(p)}</div></div><div><div class="job-card-num-label">After Gas</div><div class="job-card-num-val ${ag>=0?'pos':'neg'}">${j.mobile?fmt$(ag):'—'}</div></div></div><div style="font-size:10px;color:var(--text3);margin-bottom:6px">${fmtDate(j.date)}</div>${showEdit?`<div class="job-card-actions"><button class="btn-ghost" onclick="generateInvoice('${j.id}')">Invoice</button><button class="btn btn-outline btn-sm" onclick="editJob('${j.id}')">Edit</button><button class="btn btn-danger" onclick="deleteJob('${j.id}')">Del</button></div>`:''}</div>`;}
 
 document.getElementById('addJobBtn').addEventListener('click',()=>{
   document.getElementById('jobModalTitle').textContent='New Job';
   document.getElementById('jobEditId').value='';
-  ['j-customer','j-phone','j-device','j-repair','j-parts','j-charged','j-notes','j-miles'].forEach(id=>document.getElementById(id).value='');
+  ['j-customer','j-phone','j-device','j-repair','j-parts','j-charged','j-notes'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('j-payment').value='unpaid';
   document.getElementById('j-date').value=new Date().toISOString().split('T')[0];
   document.getElementById('j-mobile').checked=false;
@@ -941,20 +879,20 @@ function renderJobs(){
     const matchT=typeFilter==='all'||(typeFilter==='mobile'&&j.mobile)||(typeFilter==='inshop'&&!j.mobile);
     return matchQ&&matchP&&matchT;
   }).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
-  if(!filtered.length){document.getElementById('jobs-tbody').innerHTML=`<tr><td colspan="12" style="text-align:center;padding:36px;color:var(--text3)">${!jobs.length?'No jobs yet.':'No matching jobs.'}</td></tr>`;document.getElementById('jobs-cards').innerHTML='<div class="empty-state"><div class="empty-title">'+(jobs.length?'No matches':'No jobs yet')+'</div></div>';return;}
-  document.getElementById('jobs-tbody').innerHTML=filtered.map(j=>{const p=getProfit(j),ag=getAfterGas(j),td=getTaxDeduction(j);return`<tr><td><strong>${j.customer}</strong></td><td class="muted">${j.phone||'-'}</td><td>${j.device}</td><td>${j.repair}</td><td>${fmt$(j.charged)}</td><td class="${p>=0?'pos':'neg'}">${fmt$(p)}</td><td class="${ag>=0?'pos':'neg'}">${j.mobile?fmt$(ag):'—'}</td><td class="b">${td>0?fmt$(td):'—'}</td><td>${j.mobile?'<span class="badge badge-wanted">Mobile</span>':'-'}</td><td><button class="toggle-pay badge badge-${j.payment}" onclick="togglePay('${j.id}')">${j.payment}</button></td><td class="muted">${fmtDate(j.date)}</td><td><div class="action-btns"><button class="btn-ghost" onclick="generateInvoice('${j.id}')">Invoice</button><button class="btn btn-outline btn-sm" onclick="editJob('${j.id}')">Edit</button><button class="btn btn-danger" onclick="deleteJob('${j.id}')">Del</button></div></td></tr>`;}).join('');
+  if(!filtered.length){document.getElementById('jobs-tbody').innerHTML=`<tr><td colspan="11" style="text-align:center;padding:36px;color:var(--text3)">${!jobs.length?'No jobs yet.':'No matching jobs.'}</td></tr>`;document.getElementById('jobs-cards').innerHTML='<div class="empty-state"><div class="empty-title">'+(jobs.length?'No matches':'No jobs yet')+'</div></div>';return;}
+  document.getElementById('jobs-tbody').innerHTML=filtered.map(j=>{const p=getProfit(j),ag=getAfterGas(j);return`<tr><td><strong>${j.customer}</strong></td><td class="muted">${j.phone||'-'}</td><td>${j.device}</td><td>${j.repair}</td><td>${fmt$(j.charged)}</td><td class="${p>=0?'pos':'neg'}">${fmt$(p)}</td><td class="${ag>=0?'pos':'neg'}">${j.mobile?fmt$(ag):'—'}</td><td>${j.mobile?'<span class="badge badge-wanted">Mobile</span>':'-'}</td><td><button class="toggle-pay badge badge-${j.payment}" onclick="togglePay('${j.id}')">${j.payment}</button></td><td class="muted">${fmtDate(j.date)}</td><td><div class="action-btns"><button class="btn-ghost" onclick="generateInvoice('${j.id}')">Invoice</button><button class="btn btn-outline btn-sm" onclick="editJob('${j.id}')">Edit</button><button class="btn btn-danger" onclick="deleteJob('${j.id}')">Del</button></div></td></tr>`;}).join('');
   document.getElementById('jobs-cards').innerHTML=filtered.map(j=>jobCard(j,true)).join('');
 }
 
 function saveJob(){
   const id=document.getElementById('jobEditId').value;
   const isMobile=document.getElementById('j-mobile').checked;
-  const job={id:id||uid(),customer:document.getElementById('j-customer').value.trim(),phone:document.getElementById('j-phone').value.trim(),device:document.getElementById('j-device').value.trim(),repair:document.getElementById('j-repair').value.trim(),parts:parseFloat(document.getElementById('j-parts').value)||0,charged:parseFloat(document.getElementById('j-charged').value)||0,payment:document.getElementById('j-payment').value,date:document.getElementById('j-date').value,notes:document.getElementById('j-notes').value.trim(),mobile:isMobile,miles:isMobile?(parseFloat(document.getElementById('j-miles').value)||0):0,gasfee:isMobile?document.getElementById('j-gasfee').checked:false};
+  const job={id:id||uid(),customer:document.getElementById('j-customer').value.trim(),phone:document.getElementById('j-phone').value.trim(),device:document.getElementById('j-device').value.trim(),repair:document.getElementById('j-repair').value.trim(),parts:parseFloat(document.getElementById('j-parts').value)||0,charged:parseFloat(document.getElementById('j-charged').value)||0,payment:document.getElementById('j-payment').value,date:document.getElementById('j-date').value,notes:document.getElementById('j-notes').value.trim(),mobile:isMobile,gasfee:isMobile?document.getElementById('j-gasfee').checked:false};
   if(!job.customer||!job.device){alert('Customer name and device are required.');return;}
   const jobs=getJobs();if(id){jobs[jobs.findIndex(j=>j.id===id)]=job;}else{jobs.push(job);}
   saveJobs(jobs);closeModal('jobModal');renderJobs();renderDashboard();Object.keys(floatPanels).forEach(renderFloatPanel);
 }
-function editJob(id){const job=getJobs().find(j=>j.id===id);if(!job)return;document.getElementById('jobModalTitle').textContent='Edit Job';document.getElementById('jobEditId').value=job.id;document.getElementById('j-customer').value=job.customer;document.getElementById('j-phone').value=job.phone||'';document.getElementById('j-device').value=job.device;document.getElementById('j-repair').value=job.repair;document.getElementById('j-parts').value=job.parts;document.getElementById('j-charged').value=job.charged;document.getElementById('j-payment').value=job.payment;document.getElementById('j-date').value=job.date;document.getElementById('j-notes').value=job.notes||'';document.getElementById('j-mobile').checked=job.mobile||false;document.getElementById('j-miles').value=job.miles||'';document.getElementById('j-gasfee').checked=job.gasfee!==false;document.getElementById('mobileFields').style.display=job.mobile?'':'none';openModal('jobModal');}
+function editJob(id){const job=getJobs().find(j=>j.id===id);if(!job)return;document.getElementById('jobModalTitle').textContent='Edit Job';document.getElementById('jobEditId').value=job.id;document.getElementById('j-customer').value=job.customer;document.getElementById('j-phone').value=job.phone||'';document.getElementById('j-device').value=job.device;document.getElementById('j-repair').value=job.repair;document.getElementById('j-parts').value=job.parts;document.getElementById('j-charged').value=job.charged;document.getElementById('j-payment').value=job.payment;document.getElementById('j-date').value=job.date;document.getElementById('j-notes').value=job.notes||'';document.getElementById('j-mobile').checked=job.mobile||false;document.getElementById('j-gasfee').checked=job.gasfee!==false;document.getElementById('mobileFields').style.display=job.mobile?'':'none';openModal('jobModal');}
 function deleteJob(id){if(!confirm('Delete this job?'))return;saveJobs(getJobs().filter(j=>j.id!==id));renderJobs();renderDashboard();Object.keys(floatPanels).forEach(renderFloatPanel);}
 function togglePay(id){const jobs=getJobs(),job=jobs.find(j=>j.id===id);if(!job)return;job.payment=job.payment==='paid'?'unpaid':'paid';saveJobs(jobs);renderJobs();renderDashboard();}
 
