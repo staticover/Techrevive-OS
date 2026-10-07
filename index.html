@@ -1019,6 +1019,27 @@ function editInvestment(id){const i=getInvestments().find(i=>i.id===id);if(!i)re
 function deleteInvestment(id){if(!confirm('Delete this item?'))return;saveInvestments(getInvestments().filter(i=>i.id!==id));renderInvestments();}
 function toggleInvestStatus(id){const investments=getInvestments(),item=investments.find(i=>i.id===id);if(!item)return;item.status=item.status==='purchased'?'wanted':'purchased';saveInvestments(investments);renderInvestments();}
 
+function loadStarterPrices(){
+  // [model, screenCost, screenPrice, batteryCost, batteryPrice, portCost, portPrice]
+  const M=[
+    ["iPhone 11",35,99,15,70,12,75],["iPhone 12",55,119,18,80,14,80],
+    ["iPhone 13",65,139,20,85,15,85],["iPhone 14",75,159,22,90,16,90],
+    ["iPhone 15",95,179,25,99,18,99],["iPhone 16",125,219,30,109,22,109],
+    ["iPhone 11 Pro",45,109,15,70,12,75],["iPhone 12 Pro",70,139,18,80,14,80],
+    ["iPhone 13 Pro",90,169,20,85,15,85],["iPhone 14 Pro",110,199,22,90,16,90],
+    ["iPhone 15 Pro",140,239,25,99,18,99],["iPhone 16 Pro",170,279,30,109,22,109]
+  ];
+  const list=[];
+  [["Screen Replacement",1,2],["Battery Replacement",3,4],["Charging Port Repair",5,6]].forEach(([name,c,p])=>{
+    M.forEach(m=>list.push({service:name,device:m[0],cost:m[c],price:m[p]}));
+  });
+  const cur=getPricing();
+  const add=list.filter(n=>!cur.some(x=>x.service===n.service&&x.device===n.device));
+  if(!add.length){alert('Already loaded.');return;}
+  if(!confirm('Add '+add.length+' starter services? Edit the prices after to match your market.'))return;
+  savePricing([...cur,...add.map(n=>({id:uid(),...n}))]);
+  renderPricing();
+}
 // INIT
 if(getSheetsUrl()){setSyncStatus('synced');loadFromSheets();}
 renderDashboard();
